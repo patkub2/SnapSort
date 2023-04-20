@@ -1,7 +1,12 @@
-import React, { FC, ReactElement, useRef } from "react";
+import React, { FC, ReactElement } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import YupPassword from "yup-password";
+
+YupPassword(Yup);
 
 export const Box = styled.div`
   display: flex;
@@ -15,22 +20,24 @@ export const Box = styled.div`
   border-radius: 3%;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
 `;
-export const Input = styled.input`
+
+export const InputField = styled(Field)`
   border: none;
   border: 2px solid #001049;
   border-radius: 6px;
   padding: 0.3rem 0.5rem;
+  margin: 1rem 0 0.5rem 0;
   &::placeholder {
     color: #001049;
   }
 `;
 
-export const Form = styled.div`
+export const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  row-gap: 1.5rem;
   width: 14rem;
 `;
+
 export const LogoImage = styled(Image)`
   margin: 2rem 0;
 `;
@@ -38,6 +45,7 @@ export const LogoImage = styled(Image)`
 export const Button = styled.button`
   width: 14rem;
   padding: 0.5rem 0;
+  margin-top: 1.5rem;
   border-radius: 10px;
   border: 2px solid #001049;
   background-color: #001049;
@@ -59,32 +67,93 @@ export const H3 = styled.h3`
   font-weight: 500;
 `;
 
+export const ErrorMessage = styled.div`
+  font-size: 0.8rem;
+  padding: 0 0 0 0.5rem;
+  color: orangered;
+`;
+
+const RegisterSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(4, "Must be at least 4 letters long.")
+    .required("Required"),
+  email: Yup.string()
+    .email("Invalid email")
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
+    .required("Required"),
+  password: Yup.string()
+    .min(8, "Must be at least 8 charakters long.")
+    .minLowercase(1, "Must contain at least one lowercase charakter.")
+    .minUppercase(1, "Must contain at least one uppercase charakter.")
+    .minNumbers(1, "Must contain at least one number.")
+    .minSymbols(1, "Must contain at least special charakter.")
+    .required("Required"),
+  passwordConfirmation: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Required"),
+});
+
 type ChildProps = {};
 
 const RegistrationForm: FC<ChildProps> = (): ReactElement => {
-  const usernameInputRef = useRef<HTMLInputElement>(null);
-  const emailInputRef = useRef<HTMLInputElement>(null);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
-  const confirmPasswordInputRef = useRef<HTMLInputElement>(null);
-
-  const submitHandler = (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const submitHandler = (values: {
+    username: string;
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+  }) => {
+    console.log(values);
   };
 
   return (
     <Box>
-      <LogoImage src="logo.svg" alt="Logo of the page" width={60} height={60} />
-      <Form onSubmit={submitHandler}>
-        <Input type="text" placeholder="Username" ref={usernameInputRef} />
-        <Input type="email" placeholder="Email Address" ref={emailInputRef} />
-        <Input type="password" placeholder="Password" ref={passwordInputRef} />
-        <Input
-          type="password"
-          placeholder="Confirm Password"
-          ref={confirmPasswordInputRef}
-        />
-        <Button>Sign Up</Button>
-      </Form>
+      <LogoImage
+        src="logo.svg"
+        alt="Logo of the page"
+        width={60}
+        height={60}
+        priority
+      />
+      <Formik
+        initialValues={{
+          username: "",
+          email: "",
+          password: "",
+          passwordConfirmation: "",
+        }}
+        validationSchema={RegisterSchema}
+        onSubmit={submitHandler}
+      >
+        {({ errors, touched }) => (
+          <StyledForm>
+            <InputField name="username" placeholder="Username" />
+            {errors.username && touched.username && (
+              <ErrorMessage>{errors.username}</ErrorMessage>
+            )}
+            <InputField name="email" placeholder="Email Address" />
+            {errors.email && touched.email && (
+              <ErrorMessage>{errors.email}</ErrorMessage>
+            )}
+            <InputField
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
+            {errors.password && touched.password && (
+              <ErrorMessage>{errors.password}</ErrorMessage>
+            )}
+            <InputField
+              name="passwordConfirmation"
+              type="password"
+              placeholder="Confirm Password"
+            />
+            {errors.passwordConfirmation && touched.passwordConfirmation && (
+              <ErrorMessage>{errors.passwordConfirmation}</ErrorMessage>
+            )}
+            <Button type="submit">Sign Up</Button>
+          </StyledForm>
+        )}
+      </Formik>
       <H3>
         Already have an account?
         <LoginLink href={"/login"}>Log In</LoginLink>
