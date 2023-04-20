@@ -1,6 +1,4 @@
 import React, { FC, ReactElement, useRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import {
   Box,
   LogoImage,
@@ -31,9 +29,7 @@ const LoginForm: FC<ChildProps> = (): ReactElement => {
       </Form>
       <H3>
         Need a new account?
-        <LoginLink style={{ textDecoration: "none" }} href={"/registration"}>
-          Register Now
-        </LoginLink>
+        <LoginLink href={"/registration"}>Register Now</LoginLink>
       </H3>
     </Box>
   );

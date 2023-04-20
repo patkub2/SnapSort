@@ -74,7 +74,7 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
   return (
     <Box>
       <LogoImage src="logo.svg" alt="Logo of the page" width={60} height={60} />
-      <Form>
+      <Form onSubmit={submitHandler}>
         <Input type="text" placeholder="Username" ref={usernameInputRef} />
         <Input type="email" placeholder="Email Address" ref={emailInputRef} />
         <Input type="password" placeholder="Password" ref={passwordInputRef} />
@@ -87,9 +87,7 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
       </Form>
       <H3>
         Already have an account?
-        <LoginLink style={{ textDecoration: "none" }} href={"/login"}>
-          Log In
-        </LoginLink>
+        <LoginLink href={"/login"}>Log In</LoginLink>
       </H3>
     </Box>
   );
