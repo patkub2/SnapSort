@@ -1,53 +1,34 @@
 import React, { FC, ReactElement } from "react";
-import styled from "styled-components";
-import { Formik, Form, Field } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
-
-YupPassword(Yup);
 import {
   Box,
+  StyledForm,
+  InputField,
   LogoImage,
   Button,
   H3,
   LoginLink,
+  ErrorMessage,
 } from "../registration/registration-form";
 
-const StyledForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-
-  width: 14rem;
-`;
-
-const InputField = styled(Field)`
-  border: none;
-  border: 2px solid #001049;
-  border-radius: 6px;
-  padding: 0.3rem 0.5rem;
-  margin: 1rem 0 0.5rem 0;
-  &::placeholder {
-    color: #001049;
-  }
-`;
-
-const ErrorMessage = styled.div`
-  font-size: 0.8rem;
-  padding: 0 0 0 0.5rem;
-  color: orangered;
-`;
+YupPassword(Yup);
 
 type ChildProps = {};
 
 const SignupSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string()
+    .email("Invalid email")
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
+    .required("Required"),
   password: Yup.string()
-    .required("Required")
     .min(8, "Must be at least 8 charakters long.")
     .minLowercase(1, "Must contain at least one lowercase charakter.")
     .minUppercase(1, "Must contain at least one uppercase charakter.")
     .minNumbers(1, "Must contain at least one number.")
-    .minSymbols(1, "Must contain at least special charakter."),
+    .minSymbols(1, "Must contain at least special charakter.")
+    .required("Required"),
 });
 
 const LoginForm: FC<ChildProps> = (): ReactElement => {
@@ -57,7 +38,13 @@ const LoginForm: FC<ChildProps> = (): ReactElement => {
 
   return (
     <Box>
-      <LogoImage src="logo.svg" alt="Logo of the page" width={60} height={60} />
+      <LogoImage
+        src="logo.svg"
+        alt="Logo of the page"
+        width={60}
+        height={60}
+        priority
+      />
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={SignupSchema}
@@ -69,7 +56,11 @@ const LoginForm: FC<ChildProps> = (): ReactElement => {
             {errors.email && touched.email && (
               <ErrorMessage>{errors.email}</ErrorMessage>
             )}
-            <InputField name="password" placeholder="Password" />
+            <InputField
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
             {errors.password && touched.password && (
               <ErrorMessage>{errors.password}</ErrorMessage>
             )}
