@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
 
-const Box = styled.div`
+export const Box = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -15,7 +15,7 @@ const Box = styled.div`
   border-radius: 3%;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
 `;
-const Input = styled.input`
+export const Input = styled.input`
   border: none;
   border: 2px solid #001049;
   border-radius: 6px;
@@ -25,19 +25,18 @@ const Input = styled.input`
   }
 `;
 
-const Form = styled.div`
+export const Form = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1.5rem;
   width: 14rem;
 `;
-const Logo = styled.div`
+export const LogoImage = styled(Image)`
   margin: 2rem 0;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   width: 14rem;
-  margin: 2rem 0 0 0;
   padding: 0.5rem 0;
   border-radius: 10px;
   border: 2px solid #001049;
@@ -50,12 +49,12 @@ const Button = styled.button`
   }
 `;
 
-const LoginLink = styled(Link)`
+export const LoginLink = styled(Link)`
   text-decoration: none;
   margin-left: 0.3rem;
 `;
 
-const H3 = styled.h3`
+export const H3 = styled.h3`
   font-size: 0.8rem;
   font-weight: 500;
 `;
@@ -74,9 +73,7 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
 
   return (
     <Box>
-      <Logo>
-        <Image src="logo.svg" alt="Logo of the page" width={60} height={60} />
-      </Logo>
+      <LogoImage src="logo.svg" alt="Logo of the page" width={60} height={60} />
       <Form>
         <Input type="text" placeholder="Username" ref={usernameInputRef} />
         <Input type="email" placeholder="Email Address" ref={emailInputRef} />
@@ -86,8 +83,8 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
           placeholder="Confirm Password"
           ref={confirmPasswordInputRef}
         />
+        <Button>Sign Up</Button>
       </Form>
-      <Button>Sign Up</Button>
       <H3>
         Already have an account?
         <LoginLink style={{ textDecoration: "none" }} href={"/login"}>

@@ -1,7 +1,10 @@
-import React from "react";
+import React, { Fragment } from "react";
+import LoginForm from "@/components/login/login-form";
 
-const LoginPage = () => {
-  return <div></div>;
-};
-
-export default LoginPage;
+export default function LoginPage() {
+  return (
+    <Fragment>
+      <LoginForm />
+    </Fragment>
+  );
+}
