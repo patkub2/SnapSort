@@ -1,5 +1,6 @@
 import React, { FC, ReactElement, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styled from "styled-components";
 
 const Box = styled.div`
@@ -73,7 +74,9 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
 
   return (
     <Box>
-      <Logo>LOGO</Logo>
+      <Logo>
+        <Image src="logo.svg" alt="Logo of the page" width={60} height={60} />
+      </Logo>
       <Form>
         <Input type="text" placeholder="Username" ref={usernameInputRef} />
         <Input type="email" placeholder="Email Address" ref={emailInputRef} />
