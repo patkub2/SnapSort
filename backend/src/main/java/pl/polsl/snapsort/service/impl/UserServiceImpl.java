@@ -26,6 +26,14 @@ public class UserServiceImpl implements UserService {
         return users.stream().map((user) -> mapToDto(user)).collect(Collectors.toList());
     }
 
+    @Override
+    public User createUser(User user) {
+            return userRepository.save(user);
+
+    }
+
+
+
     private UserDto mapToDto(User user) {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
