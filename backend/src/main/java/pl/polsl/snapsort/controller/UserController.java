@@ -24,10 +24,10 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String listUsers(Model model) {
+    public ResponseEntity<List<UserDto>>  listUsers(Model model) {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
-        return "users";
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
 

@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface UserService {
     List<UserDto> findAllUsers();
-
-
      User createUser(User user);
 
 }
