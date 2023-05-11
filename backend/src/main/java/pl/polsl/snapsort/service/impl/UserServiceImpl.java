@@ -1,6 +1,7 @@
 package pl.polsl.snapsort.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.polsl.snapsort.dto.UserDto;
 import pl.polsl.snapsort.models.User;
@@ -25,11 +26,17 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         return userOptional.orElse(null);
     }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User saveUser(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
+
+
 
     @Override
     public void deleteUser(Long id) {
@@ -46,11 +53,6 @@ public class UserServiceImpl implements UserService {
         return users.stream().map((user) -> mapToDto(user)).collect(Collectors.toList());
     }
 
-    @Override
-    public User createUser(User user) {
-            return userRepository.save(user);
-
-    }
 
 
 
