@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 
@@ -33,26 +33,68 @@ const AddAlbum = styled.div`
   margin: 0 auto;
   display: flex;
   align-items: center;
-  border: none;
-  background-color: #fff;
   width: 90%;
+
   height: 1.7rem;
   border-radius: 0.5rem;
-  padding-left: 0.7rem;
+  padding: 0 0.7rem;
+
+  &:hover {
+    background-color: #fff;
+    cursor: pointer;
+  }
 `;
 
 const Icon = styled(Image)`
   margin-right: 0.5rem;
-  cursor: pointer;
 `;
 
 const AlbumText = styled.p`
   color: #000f43;
   font-size: 1rem;
-  cursor: pointer;
+  margin: 0.35rem 0;
 `;
 
-const Albums = styled.div``;
+const Albums = styled.div`
+  li {
+    list-style-type: none;
+  }
+
+  ul {
+    padding-left: 0.7rem;
+  }
+`;
+
+const FlexRowBox = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+  width: 95%;
+  height: auto;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background-color: #fff;
+    cursor: pointer;
+  }
+`;
+
+const IconsHolder = styled.div`
+  display: none;
+  align-items: center;
+  margin-left: auto;
+  gap: 0.3rem;
+
+  img:hover {
+    border: solid 1px transparent;
+  }
+
+  ${FlexRowBox}:hover & {
+    display: flex;
+  }
+`;
 
 const Footer = styled.div`
   margin-top: auto;
@@ -68,9 +110,97 @@ const FooterOption = styled.div`
   align-items: center;
   height: 2rem;
   padding-left: 0.7rem;
+  margin-left: 0.7rem;
+  border-radius: 0.5rem;
+  width: 90%;
+
+  &:hover {
+    background-color: #fff;
+    cursor: pointer;
+  }
 `;
 
+interface Album {
+  albumName: string;
+  id: number;
+  parentId: number | null;
+}
+
+interface AlbumListProps {
+  albums: Album[];
+}
+
 const Navigation = () => {
+  const TEST_ARRAY = [
+    { albumName: "Familly Photos", id: 1, parentId: null },
+    { albumName: "Sabine", id: 2, parentId: 1 },
+    { albumName: "Paul", id: 3, parentId: 1 },
+    { albumName: "Japan Trip", id: 5, parentId: null },
+    { albumName: "Fuji", id: 6, parentId: 5 },
+    { albumName: "Hometown", id: 7, parentId: null },
+    { albumName: "50 Birthday", id: 8, parentId: null },
+  ];
+
+  const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
+    const renderAlbum = (album: Album) => {
+      const childAlbums = albums.filter((a) => a.parentId === album.id);
+
+      if (childAlbums.length === 0) {
+        return (
+          <li key={album.id}>
+            <FlexRowBox>
+              <Icon src="circle.svg" alt="Circle icon" width={15} height={15} />
+              <AlbumText>{album.albumName}</AlbumText>
+              <IconsHolder>
+                <Image
+                  src="edit.svg"
+                  alt="Edit icon"
+                  width={17}
+                  height={17}
+                  onClick={() => console.log("Edit")}
+                />
+                <Image
+                  src="bin.svg"
+                  alt="Trash can icon"
+                  width={17}
+                  height={17}
+                  onClick={() => console.log("Delete")}
+                />
+              </IconsHolder>
+            </FlexRowBox>
+          </li>
+        );
+      }
+
+      return (
+        <li key={album.id}>
+          <FlexRowBox>
+            <Icon src="circle.svg" alt="Circle icon" width={15} height={15} />
+            <AlbumText>{album.albumName}</AlbumText>
+            <IconsHolder>
+              <Image
+                src="edit.svg"
+                alt="Edit icon"
+                width={17}
+                height={17}
+                onClick={() => console.log("Edit")}
+              />
+              <Image
+                src="bin.svg"
+                alt="Trash can icon"
+                width={17}
+                height={17}
+                onClick={() => console.log("Delete")}
+              />
+            </IconsHolder>
+          </FlexRowBox>
+          <ul>{childAlbums.map((childAlbum) => renderAlbum(childAlbum))}</ul>
+        </li>
+      );
+    };
+    const rootAlbums = albums?.filter((album) => album.parentId === null);
+    return <ul>{rootAlbums?.map((album) => renderAlbum(album))}</ul>;
+  };
   return (
     <Box>
       <Logo>
@@ -88,10 +218,7 @@ const Navigation = () => {
         <AlbumText>New album</AlbumText>
       </AddAlbum>
       <Albums>
-        {/* DISPLAY AND MAP ALL ALBUMS */}
-        <ul>
-          <li>Some album</li>
-        </ul>
+        <AlbumList albums={TEST_ARRAY} />
       </Albums>
       <Footer>
         <FooterOption>
