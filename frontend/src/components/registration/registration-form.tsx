@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
+import axios from "axios";
 
 YupPassword(Yup);
 
@@ -102,6 +103,21 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
     password: string;
     passwordConfirmation: string;
   }) => {
+    const newUser = {
+      username: values.username,
+      password: values.password,
+      email: values.email,
+    };
+    axios
+      .post("http://localhost:8080/users/create", newUser, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+      });
     console.log(values);
   };
 
