@@ -7,39 +7,46 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.snapsort.config.JwtTokenProvider;
 import pl.polsl.snapsort.dto.JwtAuthenticationResponse;
+import pl.polsl.snapsort.models.LoginRequest;
+import pl.polsl.snapsort.models.LoginResponse;
+import pl.polsl.snapsort.service.JwtTokenUtil;
+import pl.polsl.snapsort.service.UserService;
 
 @RestController
 @RequestMapping ("/api/auth")
 public class LoginController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public LoginController(AuthenticationManager authenticationManager, UserService userService, JwtTokenUtil jwtTokenUtil) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
-    @PostMapping ("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // Authenticate the user
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-            );
+            // Perform authentication
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginRequest.getUsername(), loginRequest.getPassword()));
 
-            // Generate authentication token
-            String token = jwtTokenProvider.generateToken(authentication);
+            // Generate and return authentication token
+            final UserDetails userDetails = userService.loadUserByUsername(loginRequest.getUsername());
+            final String token = jwtTokenUtil.generateToken(userDetails);
 
-            // Return the token in the response body
-            return ResponseEntity.ok(new JwtAuthenticationResponse(token));
-        } catch (AuthenticationException ex) {
-            // Return an error response if authentication fails
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.ok(new LoginResponse(token));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }
