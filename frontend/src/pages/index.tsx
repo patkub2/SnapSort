@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 
-export default function HomePage() {
+export default function StartPage() {
   return (
     <Fragment>
       <nav>
@@ -11,9 +11,12 @@ export default function HomePage() {
         <ul>
           <Link href={"/login"}>Login</Link>
         </ul>
+        <ul>
+          <Link href={"/dashboard"}>Dashboard</Link>
+        </ul>
       </nav>
       <main>
-        <h1>HomePage</h1>
+        <h1>Starting Page</h1>
       </main>
     </Fragment>
   );
