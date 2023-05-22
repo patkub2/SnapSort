@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
+import Gallery from "./main-view-gallery";
+
+import TEST_TAGS from "../../helpers/test-tags-data.json";
+import TEST_IMAGES from "../../helpers/test-images-data.json";
 
 const MainBox = styled.div`
   width: 100%;
@@ -45,7 +49,8 @@ const Dropdown = styled.div`
   padding: 0.2rem 1rem;
   z-index: 1;
   top: 2rem;
-  border: 1px solid #f2f5f8;
+  background-color: #fff;
+  border: 2px solid #f2f5f8;
   border-radius: 1%;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
@@ -53,7 +58,7 @@ const Dropdown = styled.div`
 
 const DropdownRow = styled.div`
   padding: 0.1rem 0;
-  border-bottom: 1px solid #f2f5f8;
+  border-bottom: 2px solid #f2f5f8;
   &:last-child {
     border-bottom: none;
   }
@@ -93,21 +98,6 @@ const ProfileIcon = styled(Image)`
     cursor: pointer;
   }
 `;
-const Box2 = styled.div`
-  background-color: #ab2;
-`;
-
-const TEST_TAGS = [
-  { tagName: "Apple" },
-  { tagName: "Ananas" },
-  { tagName: "Album" },
-  { tagName: "Aramek" },
-  { tagName: "Anetka" },
-  { tagName: "Amoniak" },
-  { tagName: "Akamur" },
-  { tagName: "Arek" },
-  { tagName: "Amelka" },
-];
 
 const MainView = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -182,7 +172,7 @@ const MainView = () => {
           />
         </ProfileButton>
       </Box1>
-      <Box2></Box2>
+      <Gallery images={TEST_IMAGES} />
     </MainBox>
   );
 };
