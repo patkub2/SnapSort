@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import Image from "next/image";
 import styled from "styled-components";
 
@@ -6,7 +6,7 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  width: 14rem;
+  width: 16rem;
   height: 100vh;
   background-color: #f2f5f8;
   border-right: solid 0.15rem #e2e9ef;

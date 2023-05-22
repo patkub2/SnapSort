@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import MainView from "../main-view/main-view";
 import Navigation from "../nav/navigation";
 import styled from "styled-components";
