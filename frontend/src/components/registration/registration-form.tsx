@@ -83,11 +83,11 @@ const RegisterSchema = Yup.object().shape({
     .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
     .required("Required"),
   password: Yup.string()
-    .min(8, "Must be at least 8 charakters long.")
-    .minLowercase(1, "Must contain at least one lowercase charakter.")
-    .minUppercase(1, "Must contain at least one uppercase charakter.")
-    .minNumbers(1, "Must contain at least one number.")
-    .minSymbols(1, "Must contain at least special charakter.")
+    .min(3, "Must be at least 3 charakters long.")
+    // .minLowercase(1, "Must contain at least one lowercase charakter.")
+    // .minUppercase(1, "Must contain at least one uppercase charakter.")
+    // .minNumbers(1, "Must contain at least one number.")
+    // .minSymbols(1, "Must contain at least special charakter.")
     .required("Required"),
   passwordConfirmation: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
@@ -109,7 +109,7 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
       email: values.email,
     };
     axios
-      .post("http://localhost:8080/users/create", newUser, {
+      .post("http://localhost:8080/api/users/create", newUser, {
         headers: {
           "Content-Type": "application/json",
         },

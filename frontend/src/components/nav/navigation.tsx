@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import styled from "styled-components";
+import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 
 const Box = styled.div`
   display: flex;
@@ -131,6 +133,7 @@ interface AlbumListProps {
 }
 
 const Navigation = () => {
+  const router = useRouter();
   const TEST_ARRAY = [
     { albumName: "Familly Photos", id: 1, parentId: null },
     { albumName: "Sabine", id: 2, parentId: 1 },
@@ -140,6 +143,10 @@ const Navigation = () => {
     { albumName: "Hometown", id: 7, parentId: null },
     { albumName: "50 Birthday", id: 8, parentId: null },
   ];
+
+  const handleLogout = () => {
+    signOut();
+  };
 
   const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
     const renderAlbum = (album: Album) => {
@@ -233,7 +240,7 @@ const Navigation = () => {
           <Icon src="share.svg" alt="Dark mode icon" width={15} height={15} />
           <AlbumText>Share</AlbumText>
         </FooterOption>
-        <FooterOption>
+        <FooterOption onClick={handleLogout}>
           <Icon src="logout.svg" alt="Dark mode icon" width={15} height={15} />
           <AlbumText>Logout</AlbumText>
         </FooterOption>

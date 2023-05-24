@@ -1,4 +1,10 @@
-import React, { FC, ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
+import { getCsrfToken } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
@@ -12,28 +18,45 @@ import {
   LoginLink,
   ErrorMessage,
 } from "../registration/registration-form";
+import { useRouter } from "next/router";
 
 YupPassword(Yup);
 
-type ChildProps = {};
-
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Invalid email")
-    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
+    // .email("Invalid email")
+    // .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
     .required("Required"),
   password: Yup.string()
-    .min(8, "Must be at least 8 charakters long.")
-    .minLowercase(1, "Must contain at least one lowercase charakter.")
-    .minUppercase(1, "Must contain at least one uppercase charakter.")
-    .minNumbers(1, "Must contain at least one number.")
-    .minSymbols(1, "Must contain at least special charakter.")
+    .min(3, "Must be at least 8 charakters long.")
+    // .minLowercase(1, "Must contain at least one lowercase charakter.")
+    // .minUppercase(1, "Must contain at least one uppercase charakter.")
+    // .minNumbers(1, "Must contain at least one number.")
+    // .minSymbols(1, "Must contain at least special charakter.")
     .required("Required"),
 });
 
-const LoginForm: FC<ChildProps> = (): ReactElement => {
-  const submitHandler = (values: { email: string; password: string }) => {
-    console.log(values);
+const LoginForm = ({
+  csrfToken,
+}: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
+  const [Error, setError] = useState("");
+  const router = useRouter();
+  const callbackUrl = (router.query?.callbackUrl as string) ?? "/dashboard";
+  const submitHandler = async (values: {
+    email: string;
+    password: string;
+  }): Promise<void> => {
+    const result = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+    if (result?.error) {
+      setError(result.error);
+    } else {
+      router.push(callbackUrl);
+    }
+    console.log(result);
   };
 
   return (
@@ -51,7 +74,8 @@ const LoginForm: FC<ChildProps> = (): ReactElement => {
         onSubmit={submitHandler}
       >
         {({ errors, touched }) => (
-          <StyledForm>
+          <StyledForm method="post" action="/api/auth/callback/credentials">
+            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <InputField name="email" placeholder="Address Email" />
             {errors.email && touched.email && (
               <ErrorMessage>{errors.email}</ErrorMessage>
@@ -75,5 +99,13 @@ const LoginForm: FC<ChildProps> = (): ReactElement => {
     </Box>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+    },
+  };
+}
 
 export default LoginForm;
