@@ -1,6 +1,7 @@
 package pl.polsl.snapsort.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.polsl.snapsort.dto.UserDto;

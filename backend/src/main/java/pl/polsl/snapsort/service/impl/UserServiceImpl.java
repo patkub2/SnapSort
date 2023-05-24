@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.polsl.snapsort.dto.UserDto;
 import pl.polsl.snapsort.models.User;
 import pl.polsl.snapsort.repository.UserRepository;
+import pl.polsl.snapsort.security.UserDetailsImpl;
 import pl.polsl.snapsort.service.UserService;
 
 import java.util.Collections;
@@ -78,14 +79,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + email));
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                // Add any additional user roles or authorities as needed
-                Collections.emptyList()
-        );
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+
+        return new UserDetailsImpl(user);
     }
 
     private UserDto mapToDto(User user) {

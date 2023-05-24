@@ -10,9 +10,11 @@ import java.util.Collections;
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
+    private final String email;
 
     public UserDetailsImpl(User user) {
         this.user = user;
+        this.email = user.getEmail();;
     }
 
     @Override
@@ -32,8 +34,11 @@ public class UserDetailsImpl implements UserDetails {
     }
 
 
-    public String getEmail() {
-        return user.getEmail();
+
+
+
+    public User getUser() {
+        return user;
     }
 
     public Long getId() {
@@ -62,4 +67,5 @@ public class UserDetailsImpl implements UserDetails {
         // In this example, we assume the user is always enabled
         return true;
     }
+
 }
