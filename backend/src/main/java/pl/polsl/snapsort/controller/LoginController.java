@@ -38,10 +38,10 @@ public class LoginController {
         try {
             // Perform authentication
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(), loginRequest.getPassword()));
+                    loginRequest.getEmail(), loginRequest.getPassword()));
 
             // Generate and return authentication token
-            final UserDetails userDetails = userService.loadUserByUsername(loginRequest.getUsername());
+            final UserDetails userDetails = userService.loadUserByEmail(loginRequest.getEmail());
             final String token = jwtTokenUtil.generateToken(userDetails);
 
             return ResponseEntity.ok(new LoginResponse(token));
