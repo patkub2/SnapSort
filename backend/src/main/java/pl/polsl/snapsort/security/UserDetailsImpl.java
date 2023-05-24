@@ -31,6 +31,11 @@ public class UserDetailsImpl implements UserDetails {
         return user.getUsername();
     }
 
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+
     public Long getId() {
         return user.getId();
     }
