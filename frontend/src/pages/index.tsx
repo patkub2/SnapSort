@@ -1,7 +1,9 @@
 import { Fragment } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function StartPage() {
+  const { data, status } = useSession();
   return (
     <Fragment>
       <nav>

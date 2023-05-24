@@ -1,7 +1,14 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Layout from "@/components/layout/layout";
+import { useSession } from "next-auth/react";
 
 const DashBoard = () => {
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    console.log(session);
+    console.log(status);
+  }, []);
+
   return (
     <Fragment>
       <Layout />
