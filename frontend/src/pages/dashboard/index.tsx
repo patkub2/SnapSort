@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import Layout from "@/components/layout/layout";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 const DashBoard = () => {
   const { data: session, status } = useSession();
@@ -14,6 +14,22 @@ const DashBoard = () => {
       <Layout />
     </Fragment>
   );
+};
+
+export const getServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session },
+  };
 };
 
 export default DashBoard;
