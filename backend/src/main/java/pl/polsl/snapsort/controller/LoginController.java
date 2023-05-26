@@ -16,6 +16,7 @@ import pl.polsl.snapsort.config.JwtTokenProvider;
 import pl.polsl.snapsort.dto.JwtAuthenticationResponse;
 import pl.polsl.snapsort.models.LoginRequest;
 import pl.polsl.snapsort.models.LoginResponse;
+import pl.polsl.snapsort.security.UserDetailsImpl;
 import pl.polsl.snapsort.service.JwtTokenUtil;
 import pl.polsl.snapsort.service.UserService;
 
@@ -34,9 +35,9 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // Perform authentication
+            // Perform authentication using email and password
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -44,7 +45,14 @@ public class LoginController {
             final UserDetails userDetails = userService.loadUserByEmail(loginRequest.getEmail());
             final String token = jwtTokenUtil.generateToken(userDetails);
 
-            return ResponseEntity.ok(new LoginResponse(token));
+            // Get additional user information
+            String email = ((UserDetailsImpl) userDetails).getUser().getEmail();
+            String username = userDetails.getUsername();
+
+            // Create the login response object with the token and additional user information
+            LoginResponse response = new LoginResponse(token, email, username);
+
+            return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
