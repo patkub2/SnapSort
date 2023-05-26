@@ -40,5 +40,5 @@ export default NextAuth({
       return session;
     },
   },
-  // secret: "2VrAjU7NUS14mDKICeTwEO3S2Gad8jtlHqQobDz69Io=",
+  secret: process.env.NEXTAUTH_SECRET,
 });
