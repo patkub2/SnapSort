@@ -122,7 +122,12 @@ const MainView = () => {
       <Box1>
         <SearchBarBox>
           <SearchBarContainer>
-            <Image src="search.svg" alt="Search icon" width={20} height={20} />
+            <Image
+              src="icons/search.svg"
+              alt="Search icon"
+              width={20}
+              height={20}
+            />
             <SearchBar
               type="search"
               value={searchValue}
@@ -165,7 +170,7 @@ const MainView = () => {
         </UploadButton>
         <ProfileButton>
           <ProfileIcon
-            src="user.svg"
+            src="icons/user.svg"
             alt="User profile icon"
             width={20}
             height={20}

@@ -62,7 +62,7 @@ const LoginForm = ({
   return (
     <Box>
       <LogoImage
-        src="logo.svg"
+        src="icons/logo.svg"
         alt="Logo of the page"
         width={60}
         height={60}
