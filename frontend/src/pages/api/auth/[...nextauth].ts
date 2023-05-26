@@ -13,7 +13,7 @@ export default NextAuth({
         };
         const res = await fetch("http://localhost:8080/api/auth/login", {
           method: "POST",
-          body: JSON.stringify({ username: email, password }),
+          body: JSON.stringify({ email, password }),
           headers: { "Content-Type": "application/json" },
         });
         const user = await res.json();
