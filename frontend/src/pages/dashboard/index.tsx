@@ -16,20 +16,4 @@ const DashBoard = () => {
   );
 };
 
-export const getServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: { session },
-  };
-};
-
 export default DashBoard;

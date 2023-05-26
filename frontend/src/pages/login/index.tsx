@@ -9,19 +9,3 @@ export default function LoginPage() {
     </Fragment>
   );
 }
-
-export const getServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-
-  if (session) {
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: { session },
-  };
-};

@@ -156,18 +156,23 @@ const Navigation = () => {
         return (
           <li key={album.id}>
             <FlexRowBox>
-              <Icon src="circle.svg" alt="Circle icon" width={15} height={15} />
+              <Icon
+                src="icons/circle.svg"
+                alt="Circle icon"
+                width={15}
+                height={15}
+              />
               <AlbumText>{album.albumName}</AlbumText>
               <IconsHolder>
                 <Image
-                  src="edit.svg"
+                  src="icons/edit.svg"
                   alt="Edit icon"
                   width={17}
                   height={17}
                   onClick={() => console.log("Edit")}
                 />
                 <Image
-                  src="bin.svg"
+                  src="icons/bin.svg"
                   alt="Trash can icon"
                   width={17}
                   height={17}
@@ -182,18 +187,23 @@ const Navigation = () => {
       return (
         <li key={album.id}>
           <FlexRowBox>
-            <Icon src="circle.svg" alt="Circle icon" width={15} height={15} />
+            <Icon
+              src="icons/circle.svg"
+              alt="Circle icon"
+              width={15}
+              height={15}
+            />
             <AlbumText>{album.albumName}</AlbumText>
             <IconsHolder>
               <Image
-                src="edit.svg"
+                src="icons/edit.svg"
                 alt="Edit icon"
                 width={17}
                 height={17}
                 onClick={() => console.log("Edit")}
               />
               <Image
-                src="bin.svg"
+                src="icons/bin.svg"
                 alt="Trash can icon"
                 width={17}
                 height={17}
@@ -212,7 +222,7 @@ const Navigation = () => {
     <Box>
       <Logo>
         <LogoImage
-          src="logo.svg"
+          src="icons/logo.svg"
           alt="Logo of the page"
           width={35}
           height={35}
@@ -221,7 +231,12 @@ const Navigation = () => {
         <LogoText>SnapSort</LogoText>
       </Logo>
       <AddAlbum>
-        <Icon src="cross.svg" alt="Cross icon" width={10} height={10}></Icon>
+        <Icon
+          src="icons/cross.svg"
+          alt="Cross icon"
+          width={10}
+          height={10}
+        ></Icon>
         <AlbumText>New album</AlbumText>
       </AddAlbum>
       <Albums>
@@ -229,19 +244,39 @@ const Navigation = () => {
       </Albums>
       <Footer>
         <FooterOption>
-          <Icon src="settings.svg" alt="Settings icon" width={15} height={15} />
+          <Icon
+            src="icons/settings.svg"
+            alt="Settings icon"
+            width={15}
+            height={15}
+          />
           <AlbumText>Settings</AlbumText>
         </FooterOption>
         <FooterOption>
-          <Icon src="moon.svg" alt="Dark mode icon" width={15} height={15} />
+          <Icon
+            src="icons/moon.svg"
+            alt="Dark mode icon"
+            width={15}
+            height={15}
+          />
           <AlbumText>Dark Mode</AlbumText>
         </FooterOption>
         <FooterOption>
-          <Icon src="share.svg" alt="Dark mode icon" width={15} height={15} />
+          <Icon
+            src="icons/share.svg"
+            alt="Dark mode icon"
+            width={15}
+            height={15}
+          />
           <AlbumText>Share</AlbumText>
         </FooterOption>
         <FooterOption onClick={handleLogout}>
-          <Icon src="logout.svg" alt="Dark mode icon" width={15} height={15} />
+          <Icon
+            src="icons/logout.svg"
+            alt="Dark mode icon"
+            width={15}
+            height={15}
+          />
           <AlbumText>Logout</AlbumText>
         </FooterOption>
       </Footer>

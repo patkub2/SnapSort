@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
@@ -6,6 +6,8 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
 import axios from "axios";
+import RegisterLoginPopup from "../UI/register-login-popup";
+import { useRouter } from "next/router";
 
 YupPassword(Yup);
 
@@ -97,6 +99,31 @@ const RegisterSchema = Yup.object().shape({
 type ChildProps = {};
 
 const RegistrationForm: FC<ChildProps> = (): ReactElement => {
+  const router = useRouter();
+  const [isPopupActive, setIsPopupActive] = useState(false);
+  const [popupOptions, setPopupOptions] = useState({
+    status: "",
+    message: "",
+  });
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (isPopupActive === true) {
+      timer = setTimeout(() => {
+        setIsPopupActive(false);
+        router.push("/login");
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [isPopupActive, router]);
+
+  const onClose = () => {
+    setIsPopupActive(false);
+  };
+
   const submitHandler = (values: {
     username: string;
     email: string;
@@ -117,14 +144,30 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
       .then((res) => {
         console.log(res);
         console.log(res.data);
+        if (res.status === 201 && res) {
+          setPopupOptions({
+            status: "success",
+            message: "Your account has been created.",
+          });
+          setIsPopupActive(true);
+        } else {
+          setPopupOptions({
+            status: "error",
+            message: "Something went wrong.",
+          });
+          setIsPopupActive(true);
+        }
       });
     console.log(values);
   };
 
   return (
     <Box>
+      {isPopupActive && (
+        <RegisterLoginPopup options={popupOptions} onClose={onClose} />
+      )}
       <LogoImage
-        src="logo.svg"
+        src="icons/logo.svg"
         alt="Logo of the page"
         width={60}
         height={60}
