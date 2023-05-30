@@ -41,7 +41,7 @@ const LoginForm = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
   const [Error, setError] = useState("");
   const router = useRouter();
-  const callbackUrl = (router.query?.callbackUrl as string) ?? "/dashboard";
+  const callbackUrl = (router.query?.callbackUrl as string) ?? "/";
   const submitHandler = async (values: {
     email: string;
     password: string;
