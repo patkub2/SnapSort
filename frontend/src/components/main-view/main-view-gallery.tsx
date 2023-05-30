@@ -1,31 +1,16 @@
 import React from "react";
 import Image from "next/image";
+import Pin from "./pin";
 import styled from "styled-components";
 
-const GalleryBox = styled.div`
+const PinContainer = styled.div`
   margin-top: 5rem;
-  width: 100%;
   padding: 1.5rem;
+
   display: grid;
-  grid-template-columns: repeat(5, auto);
-  grid-row-gap: 1.5rem;
-  grid-column-gap: 1.5rem;
-`;
-const ImageBox = styled.div`
-  width: 10rem;
-  height: 15rem;
-  position: relative;
-  border: 1px solid black;
-  border-radius: 10%;
-  overflow: hidden;
-`;
-
-const GalleryImage = styled(Image)`
-  object-fit: cover;
-
-  &:hover {
-    cursor: pointer;
-  }
+  grid-template-columns: repeat(auto-fill, 15.625rem);
+  grid-auto-rows: 0.625rem;
+  justify-content: center;
 `;
 
 interface Props {
@@ -36,23 +21,19 @@ interface Props {
   }[];
 }
 
+const sizes = ["small", "medium", "big"];
+
 const Gallery: React.FC<Props> = ({ images }) => {
-  return (
-    <GalleryBox>
-      {images.map((image) => {
-        return (
-          <ImageBox key={image.id}>
-            <GalleryImage
-              src={image.url}
-              alt={image.description}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          </ImageBox>
-        );
-      })}
-    </GalleryBox>
-  );
+  const mappedImages = images.map((image) => {
+    const random = Math.floor(Math.random() * sizes.length);
+    return (
+      <Pin size={sizes[random]} key={image.id}>
+        <Image src={image.url} alt={image.description} fill />
+      </Pin>
+    );
+  });
+
+  return <PinContainer>{mappedImages}</PinContainer>;
 };
 
 export default Gallery;
