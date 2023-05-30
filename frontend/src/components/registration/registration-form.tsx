@@ -101,6 +101,7 @@ type ChildProps = {};
 const RegistrationForm: FC<ChildProps> = (): ReactElement => {
   const router = useRouter();
   const [isPopupActive, setIsPopupActive] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [popupOptions, setPopupOptions] = useState({
     status: "",
     message: "",
@@ -111,54 +112,60 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
     if (isPopupActive === true) {
       timer = setTimeout(() => {
         setIsPopupActive(false);
-        router.push("/login");
+        if (!isError) {
+          router.push("/login");
+        }
       }, 5000);
     }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [isPopupActive, router]);
+  }, [isPopupActive, router, isError]);
 
   const onClose = () => {
     setIsPopupActive(false);
   };
 
-  const submitHandler = (values: {
-    username: string;
-    email: string;
-    password: string;
-    passwordConfirmation: string;
-  }) => {
+  const submitHandler = (
+    values: {
+      username: string;
+      email: string;
+      password: string;
+      passwordConfirmation: string;
+    },
+    actions: any
+  ) => {
     const newUser = {
       username: values.username,
       password: values.password,
       email: values.email,
     };
     axios
-      .post("http://localhost:8080/api/users/create", newUser, {
+      .post("http://localhost:8080/api/users/register", newUser, {
         headers: {
           "Content-Type": "application/json",
         },
       })
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
         if (res.status === 201 && res) {
           setPopupOptions({
             status: "success",
             message: "Your account has been created.",
           });
           setIsPopupActive(true);
-        } else {
-          setPopupOptions({
-            status: "error",
-            message: "Something went wrong.",
-          });
-          setIsPopupActive(true);
+          setIsError(false);
+          actions.resetForm();
         }
+      })
+      .catch((error) => {
+        setIsError(true);
+        setPopupOptions({
+          status: "error",
+          message: error.response.data,
+        });
+        setIsPopupActive(true);
       });
-    console.log(values);
   };
 
   return (
