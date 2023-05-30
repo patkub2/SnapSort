@@ -7,7 +7,7 @@ import TEST_TAGS from "../../helpers/test-tags-data.json";
 import TEST_IMAGES from "../../helpers/test-images-data.json";
 
 const MainBox = styled.div`
-  width: 100%;
+  width: 80vw;
 `;
 const Box1 = styled.div`
   display: flex;

@@ -8,7 +8,7 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  width: 16rem;
+  width: 20vw;
   height: 100vh;
   background-color: #f2f5f8;
   border-right: solid 0.15rem #e2e9ef;
