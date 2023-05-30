@@ -85,6 +85,11 @@ public class UserServiceImpl implements UserService {
         return new UserDetailsImpl(user);
     }
 
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     private UserDto mapToDto(User user) {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
