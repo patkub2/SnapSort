@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Pin from "./pin";
 import styled from "styled-components";
@@ -20,18 +20,22 @@ interface Props {
     description: string;
   }[];
 }
-
 const sizes = ["small", "medium", "big"];
 
 const Gallery: React.FC<Props> = ({ images }) => {
-  const mappedImages = images.map((image) => {
-    const random = Math.floor(Math.random() * sizes.length);
-    return (
-      <Pin size={sizes[random]} key={image.id}>
-        <Image src={image.url} alt={image.description} fill />
-      </Pin>
-    );
-  });
+  const [mappedImages, setMappedImages] = useState<JSX.Element[]>([]);
+
+  useEffect(() => {
+    const maped = images.map((image) => {
+      const random = Math.floor(Math.random() * sizes.length);
+      return (
+        <Pin size={sizes[random]} key={image.id}>
+          <Image src={image.url} alt={image.description} fill />
+        </Pin>
+      );
+    });
+    setMappedImages(maped);
+  }, [images]);
 
   return <PinContainer>{mappedImages}</PinContainer>;
 };
