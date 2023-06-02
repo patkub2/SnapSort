@@ -21,4 +21,7 @@ public class ThumbnailData {
     @Lob
     @Column(name = "data")
     private byte[] data;
+
+    public ThumbnailData(byte[] thumbnailData) {
+    }
 }

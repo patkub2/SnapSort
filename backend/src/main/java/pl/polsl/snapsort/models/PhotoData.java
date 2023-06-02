@@ -21,4 +21,7 @@ public class PhotoData {
     @Lob
     @Column(name = "data")
     private byte[] data;
+
+    public PhotoData(byte[] bytes) {
+    }
 }

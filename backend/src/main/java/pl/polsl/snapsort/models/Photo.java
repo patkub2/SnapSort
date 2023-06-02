@@ -30,4 +30,6 @@ public class Photo {
     @JoinColumn (name = "thumbnail_data_id")
     private ThumbnailData thumbnailData;
 
+    public void setDescription(String description) {
+    }
 }
