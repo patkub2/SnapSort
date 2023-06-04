@@ -5,13 +5,19 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 
 const Box = styled.div`
-  display: flex;
-  flex-direction: column;
-  row-gap: 1rem;
-  width: 20vw;
-  height: 100vh;
+  width: 20%;
   background-color: #f2f5f8;
   border-right: solid 0.15rem #e2e9ef;
+`;
+
+const InnerBox = styled.div`
+  position: fixed;
+  top: 0;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  row-gap: 1rem;
 `;
 
 const Logo = styled.div`
@@ -55,6 +61,9 @@ const AlbumText = styled.p`
   color: #000f43;
   font-size: 1rem;
   margin: 0.35rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const Albums = styled.div`
@@ -220,66 +229,86 @@ const Navigation = () => {
   };
   return (
     <Box>
-      <Logo>
-        <LogoImage
-          src="icons/logo.svg"
-          alt="Logo of the page"
-          width={35}
-          height={35}
-          priority
-        />
-        <LogoText>SnapSort</LogoText>
-      </Logo>
-      <AddAlbum>
-        <Icon
-          src="icons/cross.svg"
-          alt="Cross icon"
-          width={10}
-          height={10}
-        ></Icon>
-        <AlbumText>New album</AlbumText>
-      </AddAlbum>
-      <Albums>
-        <AlbumList albums={TEST_ARRAY} />
-      </Albums>
-      <Footer>
-        <FooterOption>
-          <Icon
-            src="icons/settings.svg"
-            alt="Settings icon"
-            width={15}
-            height={15}
+      <InnerBox>
+        <Logo>
+          <LogoImage
+            src="icons/logo.svg"
+            alt="Logo of the page"
+            width={35}
+            height={35}
+            priority
           />
-          <AlbumText>Settings</AlbumText>
-        </FooterOption>
-        <FooterOption>
+          <LogoText>SnapSort</LogoText>
+        </Logo>
+        <AddAlbum>
           <Icon
-            src="icons/moon.svg"
-            alt="Dark mode icon"
-            width={15}
-            height={15}
-          />
-          <AlbumText>Dark Mode</AlbumText>
-        </FooterOption>
-        <FooterOption>
-          <Icon
-            src="icons/share.svg"
-            alt="Dark mode icon"
-            width={15}
-            height={15}
-          />
-          <AlbumText>Share</AlbumText>
-        </FooterOption>
-        <FooterOption onClick={handleLogout}>
-          <Icon
-            src="icons/logout.svg"
-            alt="Dark mode icon"
-            width={15}
-            height={15}
-          />
-          <AlbumText>Logout</AlbumText>
-        </FooterOption>
-      </Footer>
+            src="icons/cross.svg"
+            alt="Cross icon"
+            width={10}
+            height={10}
+          ></Icon>
+          <AlbumText>New album</AlbumText>
+        </AddAlbum>
+        <Albums>
+          <AlbumList albums={TEST_ARRAY} />
+        </Albums>
+        <Footer>
+          <FooterOption>
+            <Icon
+              src="icons/settings.svg"
+              alt="Settings icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>Settings</AlbumText>
+          </FooterOption>
+          <FooterOption>
+            <Icon
+              src="icons/moon.svg"
+              alt="Dark mode icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>Dark Mode</AlbumText>
+          </FooterOption>
+          <FooterOption>
+            <Icon
+              src="icons/share.svg"
+              alt="Dark mode icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>Share</AlbumText>
+          </FooterOption>
+          <FooterOption>
+            <Icon
+              src="icons/user.svg"
+              alt="User profile icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>Profile</AlbumText>
+          </FooterOption>
+          <FooterOption>
+            <Icon
+              src="icons/upload.svg"
+              alt="Upload images icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>Upload</AlbumText>
+          </FooterOption>
+          <FooterOption onClick={handleLogout}>
+            <Icon
+              src="icons/logout.svg"
+              alt="Dark mode icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>Logout</AlbumText>
+          </FooterOption>
+        </Footer>
+      </InnerBox>
     </Box>
   );
 };
