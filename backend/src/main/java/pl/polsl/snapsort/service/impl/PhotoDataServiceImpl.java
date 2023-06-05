@@ -17,7 +17,7 @@ public class PhotoDataServiceImpl implements PhotoDataService {
 
     @Override
     public PhotoData savePhotoData(PhotoData photoData) {
-        return null;
+        return photoDataRepository.save(photoData);
     }
 
 

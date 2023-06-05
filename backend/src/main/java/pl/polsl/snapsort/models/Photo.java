@@ -16,7 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table (name = "Photo")
+@Table(name = "Photo")
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +26,14 @@ public class Photo {
     @JoinColumn(name = "photo_data_id")
     private PhotoData photoData;
 
-    @OneToOne (cascade = CascadeType.ALL)
-    @JoinColumn (name = "thumbnail_data_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "thumbnail_data_id")
     private ThumbnailData thumbnailData;
 
+    @Column(name = "description")
+    private String description;
+
     public void setDescription(String description) {
+        this.description = description;
     }
 }

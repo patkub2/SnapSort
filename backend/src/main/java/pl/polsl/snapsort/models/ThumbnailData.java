@@ -23,5 +23,6 @@ public class ThumbnailData {
     private byte[] data;
 
     public ThumbnailData(byte[] thumbnailData) {
+        this.data = thumbnailData;
     }
 }

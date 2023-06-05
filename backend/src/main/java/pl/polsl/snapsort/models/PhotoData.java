@@ -23,5 +23,6 @@ public class PhotoData {
     private byte[] data;
 
     public PhotoData(byte[] bytes) {
+        this.data = bytes;
     }
 }
