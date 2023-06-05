@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
-import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
+import UploadForm from "./uploadForm";
 
 const Box = styled.div`
   width: 20%;
@@ -67,6 +67,23 @@ const AlbumText = styled.p`
 `;
 
 const Albums = styled.div`
+  overflow-y: auto;
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #f5f5f5;
+  }
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #f5f5f5;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #555;
+  }
+
   li {
     list-style-type: none;
   }
@@ -142,7 +159,8 @@ interface AlbumListProps {
 }
 
 const Navigation = () => {
-  const router = useRouter();
+  const [isUploadModalActive, setIsUploadModalActive] =
+    useState<boolean>(false);
   const TEST_ARRAY = [
     { albumName: "Familly Photos", id: 1, parentId: null },
     { albumName: "Sabine", id: 2, parentId: 1 },
@@ -152,8 +170,14 @@ const Navigation = () => {
     { albumName: "Hometown", id: 7, parentId: null },
     { albumName: "50 Birthday", id: 8, parentId: null },
   ];
+  const testAlbums = ["Rodzina", "Znajomi", "Szkoła"];
+  const testTags = ["Beka", "gg", "whot"];
 
-  const handleLogout = () => {
+  const uploadHandler = () => {
+    setIsUploadModalActive(true);
+  };
+
+  const logoutHandler = () => {
     signOut();
   };
 
@@ -264,15 +288,6 @@ const Navigation = () => {
           </FooterOption>
           <FooterOption>
             <Icon
-              src="icons/moon.svg"
-              alt="Dark mode icon"
-              width={15}
-              height={15}
-            />
-            <AlbumText>Dark Mode</AlbumText>
-          </FooterOption>
-          <FooterOption>
-            <Icon
               src="icons/share.svg"
               alt="Dark mode icon"
               width={15}
@@ -289,7 +304,7 @@ const Navigation = () => {
             />
             <AlbumText>Profile</AlbumText>
           </FooterOption>
-          <FooterOption>
+          <FooterOption onClick={uploadHandler}>
             <Icon
               src="icons/upload.svg"
               alt="Upload images icon"
@@ -298,7 +313,7 @@ const Navigation = () => {
             />
             <AlbumText>Upload</AlbumText>
           </FooterOption>
-          <FooterOption onClick={handleLogout}>
+          <FooterOption onClick={logoutHandler}>
             <Icon
               src="icons/logout.svg"
               alt="Dark mode icon"
@@ -309,6 +324,14 @@ const Navigation = () => {
           </FooterOption>
         </Footer>
       </InnerBox>
+      {isUploadModalActive && (
+        <UploadForm
+          modalIsActive={isUploadModalActive}
+          onCancel={() => setIsUploadModalActive(false)}
+          allAlbums={testAlbums}
+          allTags={testTags}
+        />
+      )}
     </Box>
   );
 };
