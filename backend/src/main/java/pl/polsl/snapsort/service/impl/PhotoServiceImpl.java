@@ -2,17 +2,21 @@ package pl.polsl.snapsort.service.impl;
 
 import org.springframework.stereotype.Service;
 import pl.polsl.snapsort.models.Photo;
+import pl.polsl.snapsort.models.ThumbnailData;
 import pl.polsl.snapsort.repository.PhotoRepository;
 import pl.polsl.snapsort.service.PhotoService;
+import pl.polsl.snapsort.service.ThumbnailDataService;
 
 import javax.persistence.EntityNotFoundException;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
     private final PhotoRepository photoRepository;
+    private final ThumbnailDataService thumbnailDataService;
 
-    public PhotoServiceImpl(PhotoRepository photoRepository) {
+    public PhotoServiceImpl(PhotoRepository photoRepository, ThumbnailDataService thumbnailDataService) {
         this.photoRepository = photoRepository;
+        this.thumbnailDataService = thumbnailDataService;
     }
 
     // Define methods to encapsulate photo-related business logic
@@ -25,6 +29,13 @@ public class PhotoServiceImpl implements PhotoService {
 
         // Save the photo using the repository
         return photoRepository.save(photo);
+    }
+    @Override
+    public ThumbnailData getThumbnailByPhotoId(Long id) {
+        Photo photo = photoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Photo not found with id: " + id));
+
+        return photo.getThumbnailData();
     }
 
     public Photo updatePhoto(Photo updatedPhoto) {

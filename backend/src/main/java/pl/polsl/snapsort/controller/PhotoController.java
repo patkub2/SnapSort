@@ -1,6 +1,7 @@
 package pl.polsl.snapsort.controller;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityNotFoundException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -8,10 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.snapsort.models.Photo;
 import pl.polsl.snapsort.models.PhotoData;
@@ -65,6 +63,30 @@ public class PhotoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // Endpoint to fetch a specific photo by ID
+    @GetMapping ("/{id}")
+    public ResponseEntity<Photo> getPhoto(@PathVariable Long id) {
+        try {
+            Photo photo = photoService.getPhotoById(id);
+            return ResponseEntity.ok(photo);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Endpoint to fetch the thumbnail of a specific photo by ID
+    @GetMapping("/{id}/thumbnail")
+    public ResponseEntity<ThumbnailData> getPhotoThumbnail(@PathVariable Long id) {
+        try {
+            ThumbnailData thumbnail = photoService.getThumbnailByPhotoId(id);
+            return ResponseEntity.ok(thumbnail);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
     private byte[] generateThumbnail(MultipartFile file) throws IOException {
         try (InputStream inputStream = file.getInputStream()) {
