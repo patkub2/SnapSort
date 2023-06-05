@@ -24,6 +24,9 @@ public class Album {
 
     @Column(nullable = false, unique = true)
     private String name;
+
     @Column(nullable = true)
     private Long parentId;
+
+    // Add getters and setters if necessary
 }
