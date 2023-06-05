@@ -15,4 +15,5 @@ public interface AlbumService {
     Album updateAlbum(Album album);
     void deleteAlbum(Long id);
 
+    boolean existsAlbumByNameAndUserId(String name, Long userId);
 }

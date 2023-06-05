@@ -1,15 +1,15 @@
 package pl.polsl.snapsort.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.polsl.snapsort.models.Album;
+import org.springframework.stereotype.Repository;
 import pl.polsl.snapsort.models.Album;
 
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
-
-
+    boolean existsByNameAndUser_Id(String name, Long userId);
+    boolean existsByNameAndUserId(String name, Long userId);
     List<Album> findAll();
 
 }

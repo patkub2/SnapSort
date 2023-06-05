@@ -43,4 +43,8 @@ public class AlbumServiceImpl implements AlbumService {
     public void deleteAlbum(Long id) {
         albumRepository.deleteById(id);
     }
+
+    public boolean existsAlbumByNameAndUserId(String name, Long userId) {
+        return albumRepository.existsByNameAndUserId(name, userId);
+    }
 }
