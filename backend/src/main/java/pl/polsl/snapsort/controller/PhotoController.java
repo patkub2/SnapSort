@@ -1,5 +1,11 @@
 package pl.polsl.snapsort.controller;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +20,7 @@ import pl.polsl.snapsort.service.PhotoDataService;
 import pl.polsl.snapsort.service.PhotoService;
 import pl.polsl.snapsort.service.ThumbnailDataService;
 
-import java.io.IOException;
+
 
 @RestController
 @RequestMapping ("/photos")
@@ -30,8 +36,8 @@ public class PhotoController {
     }
 
     // Endpoint methods will be implemented here
-    @PostMapping ("/upload")
-    public ResponseEntity<Photo> uploadPhoto(@RequestParam ("file") MultipartFile file, @RequestParam("description") String description) {
+    @PostMapping("/upload")
+    public ResponseEntity<Photo> uploadPhoto(@RequestParam("file") MultipartFile file, @RequestParam("description") String description) {
         try {
             // Create a new PhotoData entity and save the photo data
             PhotoData photoData = new PhotoData(file.getBytes());
@@ -60,6 +66,37 @@ public class PhotoController {
         }
     }
 
-    private byte[] generateThumbnail(MultipartFile file) {
+    private byte[] generateThumbnail(MultipartFile file) throws IOException {
+        try (InputStream inputStream = file.getInputStream()) {
+        // Load the original image
+        BufferedImage originalImage = ImageIO.read(inputStream);
+
+        // Define the desired thumbnail size
+        int thumbnailWidth = 200;
+        int thumbnailHeight = 200;
+
+        // Create a thumbnail image with the desired size
+        BufferedImage thumbnailImage = new BufferedImage(thumbnailWidth, thumbnailHeight, BufferedImage.TYPE_INT_RGB);
+
+        // Resize the original image to fit the thumbnail size
+        Graphics2D graphics2D = thumbnailImage.createGraphics();
+        graphics2D.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
+        graphics2D.dispose();
+
+        // Compress the thumbnail image into a byte array
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(thumbnailImage, "JPEG", outputStream);
+
+        // Get the compressed thumbnail data as a byte array
+        byte[] thumbnailData = outputStream.toByteArray();
+
+        // Close the streams
+        inputStream.close();
+        outputStream.close();
+
+        // Return the thumbnail data
+        return thumbnailData;
+
+        }
     }
 }
