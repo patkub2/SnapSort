@@ -14,29 +14,46 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.snapsort.models.Photo;
 import pl.polsl.snapsort.models.PhotoData;
 import pl.polsl.snapsort.models.ThumbnailData;
-import pl.polsl.snapsort.service.PhotoDataService;
-import pl.polsl.snapsort.service.PhotoService;
-import pl.polsl.snapsort.service.ThumbnailDataService;
-
+import pl.polsl.snapsort.models.User;
+import pl.polsl.snapsort.service.*;
 
 
 @RestController
 @RequestMapping ("/photos")
 public class PhotoController {
+
     private final PhotoService photoService;
     private final PhotoDataService photoDataService;
     private final ThumbnailDataService thumbnailDataService;
+    private final UserService userService;
 
-    public PhotoController(PhotoService photoService, PhotoDataService photoDataService, ThumbnailDataService thumbnailDataService) {
+
+    private final JwtTokenUtil jwtTokenUtil;
+
+
+    public PhotoController(PhotoService photoService, PhotoDataService photoDataService, ThumbnailDataService thumbnailDataService,
+                           UserService userService,JwtTokenUtil jwtTokenUtil) {
         this.photoService = photoService;
         this.photoDataService = photoDataService;
         this.thumbnailDataService = thumbnailDataService;
+        this.userService = userService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     // Endpoint methods will be implemented here
     @PostMapping("/upload")
-    public ResponseEntity<Photo> uploadPhoto(@RequestParam("file") MultipartFile file, @RequestParam("description") String description) {
+    public ResponseEntity<Photo> uploadPhoto(
+            @RequestHeader(value = "Authorization") String authorizationHeader,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("description") String description
+    ) {
         try {
+            // Extract the token from the Authorization header
+            String token = authorizationHeader.substring("Bearer ".length());
+
+            // Validate the token and extract the user ID
+            Long userId = jwtTokenUtil.extractUserId(token);
+
             // Create a new PhotoData entity and save the photo data
             PhotoData photoData = new PhotoData(file.getBytes());
             photoData = photoDataService.savePhotoData(photoData);
@@ -54,6 +71,12 @@ public class PhotoController {
             photo.setPhotoData(photoData);
             photo.setThumbnailData(thumbnail);
 
+            // Retrieve the user from the database based on the user ID
+            User user = userService.getUserById(userId);
+
+            // Set the user for the photo
+            photo.setUser(user);
+
             // Save the Photo entity in the Photo table
             photo = photoService.createPhoto(photo);
 
@@ -63,7 +86,6 @@ public class PhotoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     // Endpoint to fetch a specific photo by ID
     @GetMapping ("/{id}")
     public ResponseEntity<Photo> getPhoto(@PathVariable Long id) {
