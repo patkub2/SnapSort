@@ -85,7 +85,7 @@ public class AlbumController {
     }
 
     @PostMapping("/{albumId}/photos/{photoId}")
-    public void addPhotoToAlbum(@RequestHeader("Authorization") String token,@PathVariable Long albumId, @PathVariable Long photoId) {
+    public void addPhotoToAlbum(@RequestHeader("Authorization") String token, @PathVariable Long albumId, @PathVariable Long photoId) {
         Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
 
         // Check if the album belongs to the logged-in user
@@ -101,6 +101,13 @@ public class AlbumController {
         }
 
         Album album = albumService.getAlbumById(albumId).orElseThrow(() -> new AlbumNotFoundException("Album not found."));
+
+        // Check if the photo is already in the album
+        boolean photoInAlbum = albumPhotoService.existsPhotoInAlbum(photoId, albumId);
+        if (photoInAlbum) {
+            throw new IllegalArgumentException("Photo is already in the album.");
+        }
+
         Optional<Photo> photoOptional = Optional.ofNullable(photoService.getPhotoById(photoId));
 
         if (photoOptional.isPresent()) {

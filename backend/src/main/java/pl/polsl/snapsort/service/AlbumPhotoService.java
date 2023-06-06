@@ -5,4 +5,6 @@ import pl.polsl.snapsort.models.Photo;
 
 public interface AlbumPhotoService {
     void addPhotoToAlbum(Album album, Photo photo);
+
+    boolean existsPhotoInAlbum(Long photoId, Long albumId);
 }

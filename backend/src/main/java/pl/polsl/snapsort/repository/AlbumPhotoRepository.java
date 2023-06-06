@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface AlbumPhotoRepository extends JpaRepository<AlbumPhoto, Long> {
     List<AlbumPhoto> findAllByAlbumId(Long albumId);
+
+    boolean existsByPhotoIdAndAlbumId(Long photoId, Long albumId);
 }

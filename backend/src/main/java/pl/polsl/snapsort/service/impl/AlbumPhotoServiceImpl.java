@@ -16,6 +16,11 @@ public class AlbumPhotoServiceImpl implements AlbumPhotoService {
         this.albumPhotoRepository = albumPhotoRepository;
     }
 
+
+
+    public boolean existsPhotoInAlbum(Long photoId, Long albumId) {
+        return albumPhotoRepository.existsByPhotoIdAndAlbumId(photoId, albumId);
+    }
     public void addPhotoToAlbum(Album album, Photo photo) {
         AlbumPhoto albumPhoto = AlbumPhoto.builder()
                 .album(album)
