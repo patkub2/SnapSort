@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+import java.util.List;
 
 
 @Data
@@ -39,7 +39,12 @@ public class Photo {
     @JsonIgnore
     private User user;
 
+    @OneToMany(mappedBy = "photo")
+    private List<AlbumPhoto> albumPhotos;
+
     public void setDescription(String description) {
         this.description = description;
     }
+
+
 }

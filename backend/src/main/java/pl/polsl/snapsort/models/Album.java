@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,5 +31,8 @@ public class Album {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Album parent;
+
+    @OneToMany(mappedBy = "album")
+    private List<AlbumPhoto> albumPhotos;
 
 }
