@@ -9,4 +9,6 @@ public interface PhotoService {
     ThumbnailData getThumbnailByPhotoId(Long id);
 
     Photo getPhotoById(Long id);
+
+    boolean existsPhotoByIdAndUserId(Long photoId, Long userId);
 }

@@ -11,5 +11,5 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     boolean existsByNameAndUser_Id(String name, Long userId);
     boolean existsByNameAndUserId(String name, Long userId);
     List<Album> findAll();
-
+    boolean existsByIdAndUserId(Long albumId, Long userId);
 }

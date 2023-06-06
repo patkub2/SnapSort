@@ -19,4 +19,6 @@ public interface AlbumService {
     boolean existsAlbumByNameAndUserId(String name, Long userId);
 
     List<Photo> getAlbumPhotos(Long albumId);
+
+    boolean existsAlbumByIdAndUserId(Long albumId, Long userId);
 }

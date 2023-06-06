@@ -66,4 +66,7 @@ public class PhotoServiceImpl implements PhotoService {
                 .orElseThrow(() -> new EntityNotFoundException("Photo not found"));
     }
 
+    public boolean existsPhotoByIdAndUserId(Long photoId, Long userId) {
+        return photoRepository.existsByIdAndUserId(photoId, userId);
+    }
 }

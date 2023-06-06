@@ -59,4 +59,8 @@ public class AlbumServiceImpl implements AlbumService {
         List<AlbumPhoto> albumPhotos = albumPhotoRepository.findAllByAlbumId(albumId);
         return albumPhotos.stream().map(AlbumPhoto::getPhoto).collect(Collectors.toList());
     }
+
+    public boolean existsAlbumByIdAndUserId(Long albumId, Long userId) {
+        return albumRepository.existsByIdAndUserId(albumId, userId);
+    }
 }

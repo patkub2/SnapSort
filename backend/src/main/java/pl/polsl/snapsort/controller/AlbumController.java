@@ -85,7 +85,21 @@ public class AlbumController {
     }
 
     @PostMapping("/{albumId}/photos/{photoId}")
-    public void addPhotoToAlbum(@PathVariable Long albumId, @PathVariable Long photoId) {
+    public void addPhotoToAlbum(@RequestHeader("Authorization") String token,@PathVariable Long albumId, @PathVariable Long photoId) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+
+        // Check if the album belongs to the logged-in user
+        boolean albumBelongsToUser = albumService.existsAlbumByIdAndUserId(albumId, userId);
+        if (!albumBelongsToUser) {
+            throw new AlbumNotFoundException("Album not found or does not belong to the user.");
+        }
+
+        // Check if the photo belongs to the logged-in user
+        boolean photoBelongsToUser = photoService.existsPhotoByIdAndUserId(photoId, userId);
+        if (!photoBelongsToUser) {
+            throw new PhotoNotFoundException("Photo not found or does not belong to the user.");
+        }
+
         Album album = albumService.getAlbumById(albumId).orElseThrow(() -> new AlbumNotFoundException("Album not found."));
         Optional<Photo> photoOptional = Optional.ofNullable(photoService.getPhotoById(photoId));
 

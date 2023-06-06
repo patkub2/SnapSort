@@ -6,4 +6,5 @@ import pl.polsl.snapsort.models.Photo;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
     // Add custom query methods or use default methods provided by JpaRepository
+    boolean existsByIdAndUserId(Long photoId, Long userId);
 }
