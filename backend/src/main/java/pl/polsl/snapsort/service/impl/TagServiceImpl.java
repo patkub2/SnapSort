@@ -2,6 +2,7 @@ package pl.polsl.snapsort.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.polsl.snapsort.models.Tag;
 import pl.polsl.snapsort.repository.TagRepository;
 import pl.polsl.snapsort.service.TagService;
 
@@ -12,5 +13,9 @@ public class TagServiceImpl implements TagService {
     @Autowired
     public TagServiceImpl(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
+    }
+
+    public Tag createTag(Tag tag) {
+        return tagRepository.save(tag);
     }
 }

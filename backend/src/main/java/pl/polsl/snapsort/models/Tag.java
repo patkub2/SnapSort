@@ -1,5 +1,6 @@
 package pl.polsl.snapsort.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,9 @@ public class Tag {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore // Add this annotation
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     // Constructors, getters, setters
 }
