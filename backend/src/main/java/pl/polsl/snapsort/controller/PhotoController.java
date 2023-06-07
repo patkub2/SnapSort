@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -85,6 +87,12 @@ public class PhotoController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/thumbnails")
+    public List<byte[]> getAllThumbnailDataForUser(@RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+        return photoService.getAllThumbnailDataByUserId(userId);
     }
     // Endpoint to fetch a specific photo by ID
     @GetMapping ("/{id}")

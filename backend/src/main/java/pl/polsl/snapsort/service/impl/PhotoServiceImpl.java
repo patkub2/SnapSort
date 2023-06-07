@@ -8,6 +8,7 @@ import pl.polsl.snapsort.service.PhotoService;
 import pl.polsl.snapsort.service.ThumbnailDataService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -64,6 +65,11 @@ public class PhotoServiceImpl implements PhotoService {
         // Retrieve the photo by its ID using the repository
         return photoRepository.findById(photoId)
                 .orElseThrow(() -> new EntityNotFoundException("Photo not found"));
+    }
+
+    @Override
+    public List<byte[]> getAllThumbnailDataByUserId(Long userId) {
+        return photoRepository.getAllThumbnailDataByUserId(userId);
     }
 
     public boolean existsPhotoByIdAndUserId(Long photoId, Long userId) {
