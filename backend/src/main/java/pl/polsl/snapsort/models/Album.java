@@ -1,29 +1,38 @@
 package pl.polsl.snapsort.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "Album")
+@Table(name = "Album", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "name"}))
 public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
-    @Column(nullable = true)
-    private Long parentId;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Album parent;
+
+    @OneToMany(mappedBy = "album")
+    private List<AlbumPhoto> albumPhotos;
+
 }
