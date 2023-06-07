@@ -7,4 +7,6 @@ import pl.polsl.snapsort.models.Tag;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     // Additional query methods
+
+    boolean existsByNameAndUserId(String name, Long userId);
 }

@@ -1,5 +1,6 @@
 package pl.polsl.snapsort.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,4 +31,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Photo> photos;
+
+    @JsonIgnore // Add this annotation
+    @OneToMany(mappedBy = "user")
+    private List<Tag> tags;
 }
