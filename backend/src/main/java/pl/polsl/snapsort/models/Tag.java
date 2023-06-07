@@ -13,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table (name = "Tag")
+@Table(name = "Tag", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "name"}))
 public class Tag {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)

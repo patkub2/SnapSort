@@ -1,6 +1,7 @@
 package pl.polsl.snapsort.controller;
 
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.snapsort.exceptions.DuplicateTagException;
 import pl.polsl.snapsort.models.Tag;
 import pl.polsl.snapsort.models.User;
 import pl.polsl.snapsort.service.*;
@@ -23,6 +24,12 @@ public class TagController {
     @PostMapping ("/create")
     public Tag createTag(@RequestHeader ("Authorization") String token, @RequestBody Tag tag) {
         Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+
+
+        boolean tagExists = tagService.existsTagByNameAndUserId(tag.getName(), userId);
+        if (tagExists) {
+            throw new DuplicateTagException("Tag with the same name already exists for the user.");
+        }
 
         User user = userService.getUserById(userId);
         tag.setUser(user);
