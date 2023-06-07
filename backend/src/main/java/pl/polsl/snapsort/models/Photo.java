@@ -42,6 +42,9 @@ public class Photo {
     @OneToMany(mappedBy = "photo")
     private List<AlbumPhoto> albumPhotos;
 
+    @OneToMany(mappedBy = "photo")
+    private List<PhotoTag> photoTags;
+
     public void setDescription(String description) {
         this.description = description;
     }
