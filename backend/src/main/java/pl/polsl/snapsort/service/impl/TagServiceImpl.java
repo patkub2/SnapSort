@@ -6,6 +6,8 @@ import pl.polsl.snapsort.models.Tag;
 import pl.polsl.snapsort.repository.TagRepository;
 import pl.polsl.snapsort.service.TagService;
 
+import java.util.List;
+
 @Service
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
@@ -22,5 +24,9 @@ public class TagServiceImpl implements TagService {
 
     public boolean existsTagByNameAndUserId(String name, Long userId) {
         return tagRepository.existsByNameAndUserId(name, userId);
+    }
+
+    public List<Tag> getAllTagsByUserId(Long userId) {
+        return tagRepository.findAllByUserId(userId);
     }
 }
