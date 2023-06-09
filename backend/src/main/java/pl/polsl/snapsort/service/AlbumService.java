@@ -21,4 +21,6 @@ public interface AlbumService {
     List<Photo> getAlbumPhotos(Long albumId);
 
     boolean existsAlbumByIdAndUserId(Long albumId, Long userId);
+
+    List<Album> getAlbumsByUserId(Long userId);
 }

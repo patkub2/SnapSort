@@ -29,7 +29,7 @@ public class Album {
     @Column(nullable = false)
     private String name;
 
-    @JsonIgnore // Add this annotation
+
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Album parent;
