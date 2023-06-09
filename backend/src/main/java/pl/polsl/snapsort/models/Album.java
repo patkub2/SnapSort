@@ -21,6 +21,7 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore // Add this annotation
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -28,10 +29,12 @@ public class Album {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore // Add this annotation
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Album parent;
 
+    @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "album")
     private List<AlbumPhoto> albumPhotos;
 
