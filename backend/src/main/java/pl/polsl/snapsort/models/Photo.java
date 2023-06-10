@@ -39,9 +39,11 @@ public class Photo {
     @JsonIgnore
     private User user;
 
+    @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "photo")
     private List<AlbumPhoto> albumPhotos;
 
+    @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "photo")
     private List<PhotoTag> photoTags;
 

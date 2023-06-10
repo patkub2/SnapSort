@@ -29,10 +29,14 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "user")
     private List<Photo> photos;
 
     @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "user")
     private List<Tag> tags;
+    @JsonIgnore // Add this annotation
+    @OneToMany(mappedBy = "user")
+    private List<Album> albums;
 }

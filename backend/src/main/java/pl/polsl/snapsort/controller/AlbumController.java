@@ -73,6 +73,12 @@ public class AlbumController {
         return albumService.createAlbum(newAlbum);
     }
 
+    @GetMapping("/user")
+    public List<Album> getUserAlbums(@RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+        return albumService.getAlbumsByUserId(userId);
+    }
+
     @GetMapping("/{albumId}/photos")
     public List<Photo> getAlbumPhotos(@PathVariable Long albumId) {
         return albumService.getAlbumPhotos(albumId);
@@ -117,6 +123,7 @@ public class AlbumController {
             throw new PhotoNotFoundException("Photo not found.");
         }
     }
+
 
     @DeleteMapping("/{id}")
     public void deleteAlbum(@PathVariable Long id) {

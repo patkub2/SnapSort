@@ -25,6 +25,9 @@ public class AlbumServiceImpl implements AlbumService {
         this.albumPhotoRepository = albumPhotoRepository;
     }
 
+
+
+
     @Override
     public List<Album> getAllAlbums() {
         return albumRepository.findAll();
@@ -62,5 +65,10 @@ public class AlbumServiceImpl implements AlbumService {
 
     public boolean existsAlbumByIdAndUserId(Long albumId, Long userId) {
         return albumRepository.existsByIdAndUserId(albumId, userId);
+    }
+
+    @Override
+    public List<Album> getAlbumsByUserId(Long userId) {
+        return albumRepository.findAllByUserId(userId);
     }
 }

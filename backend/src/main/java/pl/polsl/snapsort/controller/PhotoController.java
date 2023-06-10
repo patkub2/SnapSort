@@ -28,17 +28,19 @@ public class PhotoController {
     private final PhotoDataService photoDataService;
     private final ThumbnailDataService thumbnailDataService;
     private final UserService userService;
+    private final PhotoTagService photoTagService;
 
 
     private final JwtTokenUtil jwtTokenUtil;
 
 
     public PhotoController(PhotoService photoService, PhotoDataService photoDataService, ThumbnailDataService thumbnailDataService,
-                           UserService userService,JwtTokenUtil jwtTokenUtil) {
+                           UserService userService, PhotoTagService photoTagService, JwtTokenUtil jwtTokenUtil) {
         this.photoService = photoService;
         this.photoDataService = photoDataService;
         this.thumbnailDataService = thumbnailDataService;
         this.userService = userService;
+        this.photoTagService = photoTagService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
@@ -116,6 +118,10 @@ public class PhotoController {
         }
     }
 
+    @PostMapping("/{photoId}/tags/{tagId}")
+    public void addTagToPhoto(@PathVariable Long photoId, @PathVariable Long tagId) {
+        photoTagService.addTagToPhoto(photoId, tagId);
+    }
 
 
     private byte[] generateThumbnail(MultipartFile file) throws IOException {

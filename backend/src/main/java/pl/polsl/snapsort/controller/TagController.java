@@ -6,6 +6,8 @@ import pl.polsl.snapsort.models.Tag;
 import pl.polsl.snapsort.models.User;
 import pl.polsl.snapsort.service.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping ("/tags")
 public class TagController {
@@ -35,5 +37,11 @@ public class TagController {
         tag.setUser(user);
 
         return tagService.createTag(tag);
+    }
+
+    @GetMapping("/all")
+    public List<Tag> getAllTagsByUser(@RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+        return tagService.getAllTagsByUserId(userId);
     }
 }
