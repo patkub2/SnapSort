@@ -21,7 +21,10 @@ public class TagServiceImpl implements TagService {
         return tagRepository.save(tag);
     }
 
-
+    public Tag createTag(String tagName) {
+        Tag tag = new Tag(tagName);
+        return tagRepository.save(tag);
+    }
     public boolean existsTagByNameAndUserId(String name, Long userId) {
         return tagRepository.existsByNameAndUserId(name, userId);
     }

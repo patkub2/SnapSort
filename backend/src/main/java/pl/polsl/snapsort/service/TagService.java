@@ -8,6 +8,6 @@ public interface TagService {
     Tag createTag(Tag tag);
 
     boolean existsTagByNameAndUserId(String name, Long userId);
-
+    Tag createTag(String tagName);
     List<Tag> getAllTagsByUserId(Long userId);
 }

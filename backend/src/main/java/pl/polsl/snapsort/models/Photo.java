@@ -47,6 +47,10 @@ public class Photo {
     @OneToMany(mappedBy = "photo")
     private List<PhotoTag> photoTags;
 
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    private Album album;
+
     public void setDescription(String description) {
         this.description = description;
     }

@@ -9,12 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Embeddable
 public class PhotoTagId implements Serializable {
-    @Column (name = "photo_id")
+    @Column(name = "photo_id")
     private Long photoId;
 
     @Column(name = "tag_id")

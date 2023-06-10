@@ -7,16 +7,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.polsl.snapsort.models.Photo;
-import pl.polsl.snapsort.models.PhotoData;
-import pl.polsl.snapsort.models.ThumbnailData;
-import pl.polsl.snapsort.models.User;
+import pl.polsl.snapsort.models.*;
 import pl.polsl.snapsort.service.*;
 
 
@@ -29,20 +27,93 @@ public class PhotoController {
     private final ThumbnailDataService thumbnailDataService;
     private final UserService userService;
     private final PhotoTagService photoTagService;
-
+    private final AlbumService albumService;
 
     private final JwtTokenUtil jwtTokenUtil;
 
-
-    public PhotoController(PhotoService photoService, PhotoDataService photoDataService, ThumbnailDataService thumbnailDataService,
-                           UserService userService, PhotoTagService photoTagService, JwtTokenUtil jwtTokenUtil) {
+    public PhotoController(PhotoService photoService, PhotoDataService photoDataService,
+                           ThumbnailDataService thumbnailDataService, UserService userService,
+                           PhotoTagService photoTagService, AlbumService albumService,
+                           JwtTokenUtil jwtTokenUtil) {
         this.photoService = photoService;
         this.photoDataService = photoDataService;
         this.thumbnailDataService = thumbnailDataService;
         this.userService = userService;
         this.photoTagService = photoTagService;
+        this.albumService = albumService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
+
+    @PostMapping("/upload/multiple")
+    public ResponseEntity<List<Photo>> uploadPhotos(
+            @RequestHeader(value = "Authorization") String authorizationHeader,
+            @RequestParam("files") MultipartFile[] files,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "tags", required = false) List<String> tags,
+            @RequestParam(value = "albumId", required = false) Long albumId
+    ) {
+        try {
+            // Extract the token from the Authorization header
+            String token = authorizationHeader.substring("Bearer ".length());
+
+            // Validate the token and extract the user ID
+            Long userId = jwtTokenUtil.extractUserId(token);
+
+            // Retrieve the user from the database based on the user ID
+            User user = userService.getUserById(userId);
+
+            // Create a new list to store the created photos
+            List<Photo> createdPhotos = new ArrayList<>();
+
+            // Iterate over the uploaded files
+            for (MultipartFile file : files) {
+                // Create a new PhotoData entity and save the photo data
+                PhotoData photoData = new PhotoData(file.getBytes());
+                photoData = photoDataService.savePhotoData(photoData);
+
+                // Generate the thumbnail data
+                byte[] thumbnailData = generateThumbnail(file);
+
+                // Create a new ThumbnailData entity and save the thumbnail data
+                ThumbnailData thumbnail = new ThumbnailData(thumbnailData);
+                thumbnail = thumbnailDataService.saveThumbnailData(thumbnail);
+
+                // Create a new Photo entity and associate it with the PhotoData and ThumbnailData entities
+                Photo photo = new Photo();
+                photo.setDescription(description);
+                photo.setPhotoData(photoData);
+                photo.setThumbnailData(thumbnail);
+                photo.setUser(user);
+
+                // Save the Photo entity in the Photo table
+                photo = photoService.createPhoto(photo);
+
+                // If tags are provided, add them to the photo
+                if (tags != null && !tags.isEmpty()) {
+                    for (String tagName : tags) {
+                        photoTagService.addTagToPhoto(photo.getId(), tagName, userId);
+                    }
+                }
+
+                // If an album ID is provided, associate the photo with the album
+                if (albumId != null) {
+                    Album album = albumService.getAlbumById(albumId)
+                            .orElseThrow(() -> new EntityNotFoundException("Album not found."));
+                    photo.setAlbum(album);
+                }
+
+                // Add the created photo to the list
+                createdPhotos.add(photo);
+            }
+
+            return ResponseEntity.ok(createdPhotos);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 
     // Endpoint methods will be implemented here
     @PostMapping("/upload")
@@ -163,4 +234,6 @@ public class PhotoController {
 
         }
     }
+
+
 }

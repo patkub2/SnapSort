@@ -26,5 +26,9 @@ public class Tag {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Tag(String name) {
+        this.name = name;
+    }
     // Constructors, getters, setters
 }
