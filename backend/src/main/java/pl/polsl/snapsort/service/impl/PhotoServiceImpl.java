@@ -72,6 +72,11 @@ public class PhotoServiceImpl implements PhotoService {
         return photoRepository.getAllThumbnailDataByUserId(userId);
     }
 
+    @Override
+    public List<byte[]> getAllThumbnailDataByUserIdAndAlbumId(Long userId, Long albumId) {
+        return photoRepository.getAllThumbnailDataByUserIdAndAlbumId(userId,albumId);
+    }
+
     public boolean existsPhotoByIdAndUserId(Long photoId, Long userId) {
         return photoRepository.existsByIdAndUserId(photoId, userId);
     }

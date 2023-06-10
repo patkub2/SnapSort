@@ -12,6 +12,8 @@ public interface PhotoService {
 
     Photo getPhotoById(Long id);
 
+    List<byte[]> getAllThumbnailDataByUserIdAndAlbumId(Long userId, Long albumId);
+
     boolean existsPhotoByIdAndUserId(Long photoId, Long userId);
 
     List<byte[]> getAllThumbnailDataByUserId(Long userId);

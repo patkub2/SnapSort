@@ -91,6 +91,12 @@ public class PhotoController {
         }
     }
 
+    @GetMapping("album/{albumId}/thumbnails")
+    public List<byte[]> getAllThumbnailDataForUserAndAlbum(@RequestHeader("Authorization") String token, @PathVariable Long albumId) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+        return photoService.getAllThumbnailDataByUserIdAndAlbumId(userId,albumId);
+    }
+
     @GetMapping("/thumbnails")
     public List<byte[]> getAllThumbnailDataForUser(@RequestHeader("Authorization") String token) {
         Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
