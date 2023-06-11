@@ -34,22 +34,23 @@ const IconsHolder = styled.div`
 `;
 
 interface Album {
-  albumName: string;
+  name: string;
   id: number;
-  parentId: number | null;
+  parent: number | null;
 }
 
 interface AlbumListProps {
   albums: Album[];
+  getAlbumId: (id: number) => void;
 }
 
-const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
+const AlbumList: React.FC<AlbumListProps> = ({ albums, getAlbumId }) => {
   const renderAlbum = (album: Album) => {
-    const childAlbums = albums.filter((a) => a.parentId === album.id);
+    const childAlbums = albums.filter((a) => a.parent === album.id);
 
     if (childAlbums.length === 0) {
       return (
-        <li key={album.id}>
+        <li key={album.id} onClick={() => getAlbumId(album.id)}>
           <FlexRowBox>
             <Icon
               src="icons/circle.svg"
@@ -57,7 +58,7 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
               width={15}
               height={15}
             />
-            <AlbumText>{album.albumName}</AlbumText>
+            <AlbumText>{album.name}</AlbumText>
             <IconsHolder>
               <Image
                 src="icons/edit.svg"
@@ -80,7 +81,7 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
     }
 
     return (
-      <li key={album.id}>
+      <li key={album.id} onClick={() => getAlbumId(album.id)}>
         <FlexRowBox>
           <Icon
             src="icons/circle.svg"
@@ -88,7 +89,7 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
             width={15}
             height={15}
           />
-          <AlbumText>{album.albumName}</AlbumText>
+          <AlbumText>{album.name}</AlbumText>
           <IconsHolder>
             <Image
               src="icons/edit.svg"
@@ -110,7 +111,7 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
       </li>
     );
   };
-  const rootAlbums = albums?.filter((album) => album.parentId === null);
+  const rootAlbums = albums?.filter((album) => album.parent === null);
   return <ul>{rootAlbums?.map((album) => renderAlbum(album))}</ul>;
 };
 
