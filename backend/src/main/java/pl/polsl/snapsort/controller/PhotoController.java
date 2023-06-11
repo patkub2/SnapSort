@@ -19,6 +19,7 @@ import pl.polsl.snapsort.service.*;
 
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping ("/photos")
 public class PhotoController {
 
