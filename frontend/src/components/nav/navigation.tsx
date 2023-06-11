@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
-import { signOut } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import UploadForm from "./uploadForm";
 import AlbumList from "../albums/albumList";
+import AddAlbumForm from "../albums/addAlbumForm";
+import { getAllAlbums, getAllTags } from "@/store/requests";
 
 const Box = styled.div`
   width: 20%;
@@ -118,20 +120,47 @@ const FooterOption = styled.div`
   }
 `;
 
-const Navigation = () => {
+interface Props {
+  getAlbumId: (id: number) => void;
+}
+
+interface displayedAlbums {
+  name: string;
+  id: number;
+  parent: number | null;
+}
+
+interface displayedTags {
+  name: string;
+  id: number;
+}
+
+const Navigation: React.FC<Props> = ({ getAlbumId }) => {
   const [isUploadModalActive, setIsUploadModalActive] =
     useState<boolean>(false);
-  const TEST_ARRAY = [
-    { albumName: "Familly Photos", id: 1, parentId: null },
-    { albumName: "Sabine", id: 2, parentId: 1 },
-    { albumName: "Paul", id: 3, parentId: 1 },
-    { albumName: "Japan Trip", id: 5, parentId: null },
-    { albumName: "Fuji", id: 6, parentId: 5 },
-    { albumName: "Hometown", id: 7, parentId: null },
-    { albumName: "50 Birthday", id: 8, parentId: null },
-  ];
-  const testAlbums = ["Rodzina", "Znajomi", "Szkoła"];
+  const [isAlbumModalActive, setIsAlbumModalActive] = useState<boolean>(false);
+  const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
+  const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const session = await getSession();
+      if (session) {
+        getAllAlbums(session.user.token)
+          .then((res) => setDisplayedAlbums(res.data))
+          .catch((error) => console.log(error));
+
+        // getAllTags(session.user.token)
+        //   .then((res) => setDisplayedTags(res.data))
+        //   .catch((error) => console.log(error));
+      }
+    };
+    fetchData();
+  }, []);
   const testTags = ["Beka", "gg", "whot"];
+
+  const addAlbumHandler = () => {
+    setIsAlbumModalActive(true);
+  };
 
   const uploadHandler = () => {
     setIsUploadModalActive(true);
@@ -154,7 +183,7 @@ const Navigation = () => {
           />
           <LogoText>SnapSort</LogoText>
         </Logo>
-        <AddAlbum>
+        <AddAlbum onClick={addAlbumHandler}>
           <Icon
             src="icons/cross.svg"
             alt="Cross icon"
@@ -163,8 +192,20 @@ const Navigation = () => {
           ></Icon>
           <AlbumText>New album</AlbumText>
         </AddAlbum>
+        {isAlbumModalActive && (
+          <AddAlbumForm
+            modalIsActive={isAlbumModalActive}
+            onCancel={() => setIsAlbumModalActive(false)}
+          />
+        )}
         <Albums>
-          <AlbumList albums={TEST_ARRAY} />
+          {displayedAlbums.length > 0 ? (
+            <AlbumList albums={displayedAlbums} getAlbumId={getAlbumId} />
+          ) : (
+            <AlbumText style={{ textAlign: "center" }}>
+              No albums found
+            </AlbumText>
+          )}
         </Albums>
         <Footer>
           <FooterOption>
@@ -218,7 +259,7 @@ const Navigation = () => {
         <UploadForm
           modalIsActive={isUploadModalActive}
           onCancel={() => setIsUploadModalActive(false)}
-          allAlbums={testAlbums}
+          allAlbums={displayedAlbums.map((album) => album.name)}
           allTags={testTags}
         />
       )}
