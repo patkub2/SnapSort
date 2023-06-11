@@ -149,9 +149,9 @@ const Navigation: React.FC<Props> = ({ getAlbumId }) => {
           .then((res) => setDisplayedAlbums(res.data))
           .catch((error) => console.log(error));
 
-        // getAllTags(session.user.token)
-        //   .then((res) => setDisplayedTags(res.data))
-        //   .catch((error) => console.log(error));
+        getAllTags(session.user.token)
+          .then((res) => setDisplayedTags(res.data))
+          .catch((error) => console.log(error));
       }
     };
     fetchData();
@@ -269,7 +269,7 @@ const Navigation: React.FC<Props> = ({ getAlbumId }) => {
           modalIsActive={isUploadModalActive}
           onCancel={() => setIsUploadModalActive(false)}
           allAlbums={displayedAlbums.map((album) => album.name)}
-          allTags={testTags}
+          allTags={displayedTags.map((tag) => tag.name)}
         />
       )}
     </Box>
