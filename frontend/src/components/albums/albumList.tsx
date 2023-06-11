@@ -33,6 +33,11 @@ const IconsHolder = styled.div`
   }
 `;
 
+const AlbumHolder = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 interface Album {
   name: string;
   id: number;
@@ -50,15 +55,17 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums, getAlbumId }) => {
 
     if (childAlbums.length === 0) {
       return (
-        <li key={album.id} onClick={() => getAlbumId(album.id)}>
+        <li key={album.id}>
           <FlexRowBox>
-            <Icon
-              src="icons/circle.svg"
-              alt="Circle icon"
-              width={15}
-              height={15}
-            />
-            <AlbumText>{album.name}</AlbumText>
+            <AlbumHolder onClick={() => getAlbumId(album.id)}>
+              <Icon
+                src="icons/circle.svg"
+                alt="Circle icon"
+                width={15}
+                height={15}
+              />
+              <AlbumText>{album.name}</AlbumText>
+            </AlbumHolder>
             <IconsHolder>
               <Image
                 src="icons/edit.svg"
@@ -81,15 +88,17 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums, getAlbumId }) => {
     }
 
     return (
-      <li key={album.id} onClick={() => getAlbumId(album.id)}>
+      <li key={album.id}>
         <FlexRowBox>
-          <Icon
-            src="icons/circle.svg"
-            alt="Circle icon"
-            width={15}
-            height={15}
-          />
-          <AlbumText>{album.name}</AlbumText>
+          <AlbumHolder onClick={() => getAlbumId(album.id)}>
+            <Icon
+              src="icons/circle.svg"
+              alt="Circle icon"
+              width={15}
+              height={15}
+            />
+            <AlbumText>{album.name}</AlbumText>
+          </AlbumHolder>
           <IconsHolder>
             <Image
               src="icons/edit.svg"
