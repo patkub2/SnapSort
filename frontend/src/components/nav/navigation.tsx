@@ -205,7 +205,11 @@ const Navigation: React.FC<Props> = ({ getAlbumId }) => {
         )}
         <Albums>
           {displayedAlbums.length > 0 ? (
-            <AlbumList albums={displayedAlbums} getAlbumId={getAlbumId} />
+            <AlbumList
+              albums={displayedAlbums}
+              getAlbumId={getAlbumId}
+              updateAlbums={updateAlbums}
+            />
           ) : (
             <AlbumText style={{ textAlign: "center" }}>
               No albums found

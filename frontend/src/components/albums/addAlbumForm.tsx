@@ -18,7 +18,6 @@ const AddAlbumForm: React.FC<Props> = ({
 }) => {
   const { data: session } = useSession();
   const onSubmitHandler = async (values: any) => {
-    console.log(values);
     try {
       await axios.post(
         "http://localhost:8080/api/albums/create",
