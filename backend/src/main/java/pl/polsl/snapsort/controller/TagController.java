@@ -9,6 +9,7 @@ import pl.polsl.snapsort.service.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping ("/tags")
 public class TagController {
 

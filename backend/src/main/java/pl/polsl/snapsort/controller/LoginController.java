@@ -6,10 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.polsl.snapsort.models.LoginRequest;
 import pl.polsl.snapsort.models.LoginResponse;
 import pl.polsl.snapsort.security.UserDetailsImpl;
@@ -17,6 +14,7 @@ import pl.polsl.snapsort.service.JwtTokenUtil;
 import pl.polsl.snapsort.service.UserService;
 
 @RestController
+@CrossOrigin ("*")
 @RequestMapping ("/api/auth")
 public class LoginController {
 

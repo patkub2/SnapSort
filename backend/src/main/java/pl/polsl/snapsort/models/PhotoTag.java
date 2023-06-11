@@ -26,6 +26,5 @@ public class PhotoTag {
     @MapsId("tagId")
     @JoinColumn(name = "tag_id")
     private Tag tag;
-
     // Constructors, getters, setters
 }
