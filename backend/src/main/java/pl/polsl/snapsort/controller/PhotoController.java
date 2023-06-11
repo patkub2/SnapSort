@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.polsl.snapsort.exceptions.AlbumNotFoundException;
 import pl.polsl.snapsort.models.*;
 import pl.polsl.snapsort.service.*;
 
@@ -29,19 +30,20 @@ public class PhotoController {
     private final UserService userService;
     private final PhotoTagService photoTagService;
     private final AlbumService albumService;
-
+    private final AlbumPhotoService albumPhotoService;
     private final JwtTokenUtil jwtTokenUtil;
 
     public PhotoController(PhotoService photoService, PhotoDataService photoDataService,
                            ThumbnailDataService thumbnailDataService, UserService userService,
                            PhotoTagService photoTagService, AlbumService albumService,
-                           JwtTokenUtil jwtTokenUtil) {
+                           AlbumPhotoService albumPhotoService, JwtTokenUtil jwtTokenUtil) {
         this.photoService = photoService;
         this.photoDataService = photoDataService;
         this.thumbnailDataService = thumbnailDataService;
         this.userService = userService;
         this.photoTagService = photoTagService;
         this.albumService = albumService;
+        this.albumPhotoService = albumPhotoService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
@@ -95,12 +97,16 @@ public class PhotoController {
                         photoTagService.addTagToPhoto(photo.getId(), tagName, userId);
                     }
                 }
+                boolean albumBelongsToUser = albumService.existsAlbumByIdAndUserId(albumId, userId);
+                if (!albumBelongsToUser) {
+                    throw new AlbumNotFoundException("Album not found or does not belong to the user.");
+                }
 
                 // If an album ID is provided, associate the photo with the album
                 if (albumId != null) {
                     Album album = albumService.getAlbumById(albumId)
                             .orElseThrow(() -> new EntityNotFoundException("Album not found."));
-                    photo.setAlbum(album);
+                    albumPhotoService.addPhotoToAlbum(album, photo);
                 }
 
                 // Add the created photo to the list
