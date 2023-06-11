@@ -39,7 +39,7 @@ const UploadForm: React.FC<Props> = ({
       title="Upload your images"
       open={modalIsActive}
       onCancel={onCancel}
-      okButtonProps={{ style: { display: "none" } }}
+      footer={null}
     >
       <Container>
         <Form onFinish={onSubmitHandler}>

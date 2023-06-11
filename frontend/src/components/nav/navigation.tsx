@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
-import { signOut } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import UploadForm from "./uploadForm";
+import AlbumList from "../albums/albumList";
+import AddAlbumForm from "../albums/addAlbumForm";
+import { getAllAlbums, getAllTags } from "@/store/requests";
 
 const Box = styled.div`
   width: 20%;
@@ -53,11 +56,11 @@ const AddAlbum = styled.div`
   }
 `;
 
-const Icon = styled(Image)`
+export const Icon = styled(Image)`
   margin-right: 0.5rem;
 `;
 
-const AlbumText = styled.p`
+export const AlbumText = styled.p`
   color: #000f43;
   font-size: 1rem;
   margin: 0.35rem 0;
@@ -93,37 +96,6 @@ const Albums = styled.div`
   }
 `;
 
-const FlexRowBox = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  padding-left: 0.7rem;
-  padding-right: 0.7rem;
-  width: 95%;
-  height: auto;
-  border-radius: 0.5rem;
-
-  &:hover {
-    background-color: #fff;
-    cursor: pointer;
-  }
-`;
-
-const IconsHolder = styled.div`
-  display: none;
-  align-items: center;
-  margin-left: auto;
-  gap: 0.3rem;
-
-  img:hover {
-    border: solid 1px transparent;
-  }
-
-  ${FlexRowBox}:hover & {
-    display: flex;
-  }
-`;
-
 const Footer = styled.div`
   margin-top: auto;
   border-top: solid 2px #00114d;
@@ -148,30 +120,51 @@ const FooterOption = styled.div`
   }
 `;
 
-interface Album {
-  albumName: string;
+interface Props {
+  getAlbumId: (id: number) => void;
+}
+
+export interface displayedAlbums {
+  name: string;
   id: number;
-  parentId: number | null;
+  parent: number | null;
 }
 
-interface AlbumListProps {
-  albums: Album[];
+interface displayedTags {
+  name: string;
+  id: number;
 }
 
-const Navigation = () => {
+const Navigation: React.FC<Props> = ({ getAlbumId }) => {
   const [isUploadModalActive, setIsUploadModalActive] =
     useState<boolean>(false);
-  const TEST_ARRAY = [
-    { albumName: "Familly Photos", id: 1, parentId: null },
-    { albumName: "Sabine", id: 2, parentId: 1 },
-    { albumName: "Paul", id: 3, parentId: 1 },
-    { albumName: "Japan Trip", id: 5, parentId: null },
-    { albumName: "Fuji", id: 6, parentId: 5 },
-    { albumName: "Hometown", id: 7, parentId: null },
-    { albumName: "50 Birthday", id: 8, parentId: null },
-  ];
-  const testAlbums = ["Rodzina", "Znajomi", "Szkoła"];
+  const [isAlbumModalActive, setIsAlbumModalActive] = useState<boolean>(false);
+  const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
+  const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const session = await getSession();
+      if (session) {
+        getAllAlbums(session.user.token)
+          .then((res) => setDisplayedAlbums(res.data))
+          .catch((error) => console.log(error));
+
+        // getAllTags(session.user.token)
+        //   .then((res) => setDisplayedTags(res.data))
+        //   .catch((error) => console.log(error));
+      }
+    };
+    fetchData();
+  }, []);
   const testTags = ["Beka", "gg", "whot"];
+
+  const updateAlbums = (albums: displayedAlbums[]) => {
+    setDisplayedAlbums(albums);
+  };
+
+  const addAlbumHandler = () => {
+    setIsAlbumModalActive(true);
+  };
 
   const uploadHandler = () => {
     setIsUploadModalActive(true);
@@ -181,76 +174,6 @@ const Navigation = () => {
     signOut();
   };
 
-  const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
-    const renderAlbum = (album: Album) => {
-      const childAlbums = albums.filter((a) => a.parentId === album.id);
-
-      if (childAlbums.length === 0) {
-        return (
-          <li key={album.id}>
-            <FlexRowBox>
-              <Icon
-                src="icons/circle.svg"
-                alt="Circle icon"
-                width={15}
-                height={15}
-              />
-              <AlbumText>{album.albumName}</AlbumText>
-              <IconsHolder>
-                <Image
-                  src="icons/edit.svg"
-                  alt="Edit icon"
-                  width={17}
-                  height={17}
-                  onClick={() => console.log("Edit")}
-                />
-                <Image
-                  src="icons/bin.svg"
-                  alt="Trash can icon"
-                  width={17}
-                  height={17}
-                  onClick={() => console.log("Delete")}
-                />
-              </IconsHolder>
-            </FlexRowBox>
-          </li>
-        );
-      }
-
-      return (
-        <li key={album.id}>
-          <FlexRowBox>
-            <Icon
-              src="icons/circle.svg"
-              alt="Circle icon"
-              width={15}
-              height={15}
-            />
-            <AlbumText>{album.albumName}</AlbumText>
-            <IconsHolder>
-              <Image
-                src="icons/edit.svg"
-                alt="Edit icon"
-                width={17}
-                height={17}
-                onClick={() => console.log("Edit")}
-              />
-              <Image
-                src="icons/bin.svg"
-                alt="Trash can icon"
-                width={17}
-                height={17}
-                onClick={() => console.log("Delete")}
-              />
-            </IconsHolder>
-          </FlexRowBox>
-          <ul>{childAlbums.map((childAlbum) => renderAlbum(childAlbum))}</ul>
-        </li>
-      );
-    };
-    const rootAlbums = albums?.filter((album) => album.parentId === null);
-    return <ul>{rootAlbums?.map((album) => renderAlbum(album))}</ul>;
-  };
   return (
     <Box>
       <InnerBox>
@@ -264,7 +187,7 @@ const Navigation = () => {
           />
           <LogoText>SnapSort</LogoText>
         </Logo>
-        <AddAlbum>
+        <AddAlbum onClick={addAlbumHandler}>
           <Icon
             src="icons/cross.svg"
             alt="Cross icon"
@@ -273,8 +196,25 @@ const Navigation = () => {
           ></Icon>
           <AlbumText>New album</AlbumText>
         </AddAlbum>
+        {isAlbumModalActive && (
+          <AddAlbumForm
+            modalIsActive={isAlbumModalActive}
+            onCancel={() => setIsAlbumModalActive(false)}
+            updateAlbums={updateAlbums}
+          />
+        )}
         <Albums>
-          <AlbumList albums={TEST_ARRAY} />
+          {displayedAlbums.length > 0 ? (
+            <AlbumList
+              albums={displayedAlbums}
+              getAlbumId={getAlbumId}
+              updateAlbums={updateAlbums}
+            />
+          ) : (
+            <AlbumText style={{ textAlign: "center" }}>
+              No albums found
+            </AlbumText>
+          )}
         </Albums>
         <Footer>
           <FooterOption>
@@ -328,7 +268,7 @@ const Navigation = () => {
         <UploadForm
           modalIsActive={isUploadModalActive}
           onCancel={() => setIsUploadModalActive(false)}
-          allAlbums={testAlbums}
+          allAlbums={displayedAlbums.map((album) => album.name)}
           allTags={testTags}
         />
       )}
