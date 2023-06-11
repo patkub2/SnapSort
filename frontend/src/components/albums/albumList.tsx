@@ -1,6 +1,10 @@
 import Image from "next/image";
 import styled from "styled-components";
+import { message, Popconfirm } from "antd";
 import { AlbumText, Icon } from "../nav/navigation";
+import { deleteAlbumById, getAllAlbums } from "@/store/requests";
+import { useSession } from "next-auth/react";
+import { displayedAlbums } from "../nav/navigation";
 
 const FlexRowBox = styled.div`
   display: flex;
@@ -36,6 +40,10 @@ const IconsHolder = styled.div`
 const AlbumHolder = styled.div`
   display: flex;
   align-items: center;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 interface Album {
@@ -47,10 +55,28 @@ interface Album {
 interface AlbumListProps {
   albums: Album[];
   getAlbumId: (id: number) => void;
+  updateAlbums: (albums: displayedAlbums[]) => void;
 }
 
-const AlbumList: React.FC<AlbumListProps> = ({ albums, getAlbumId }) => {
+const AlbumList: React.FC<AlbumListProps> = ({
+  albums,
+  getAlbumId,
+  updateAlbums,
+}) => {
+  const { data: session } = useSession();
   const renderAlbum = (album: Album) => {
+    const deleteHandler = async (e: any) => {
+      console.log(e);
+      try {
+        await deleteAlbumById(album.id, session?.user.token);
+        await getAllAlbums(session?.user.token)
+          .then((res) => updateAlbums(res.data))
+          .catch((error) => console.log(error));
+        message.success("The album was deleted.");
+      } catch (error) {
+        message.error("Something went wrong.");
+      }
+    };
     const childAlbums = albums.filter((a) => a.parent === album.id);
 
     if (childAlbums.length === 0) {
@@ -74,13 +100,20 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums, getAlbumId }) => {
                 height={17}
                 onClick={() => console.log("Edit")}
               />
-              <Image
-                src="icons/bin.svg"
-                alt="Trash can icon"
-                width={17}
-                height={17}
-                onClick={() => console.log("Delete")}
-              />
+              <Popconfirm
+                title="Delete the album"
+                description="Are you sure you want to delete this album?"
+                onConfirm={deleteHandler}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Image
+                  src="icons/bin.svg"
+                  alt="Trash can icon"
+                  width={17}
+                  height={17}
+                />
+              </Popconfirm>
             </IconsHolder>
           </FlexRowBox>
         </li>
@@ -107,13 +140,20 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums, getAlbumId }) => {
               height={17}
               onClick={() => console.log("Edit")}
             />
-            <Image
-              src="icons/bin.svg"
-              alt="Trash can icon"
-              width={17}
-              height={17}
-              onClick={() => console.log("Delete")}
-            />
+            <Popconfirm
+              title="Delete the album"
+              description="Are you sure you want to delete this album?"
+              onConfirm={deleteHandler}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Image
+                src="icons/bin.svg"
+                alt="Trash can icon"
+                width={17}
+                height={17}
+              />
+            </Popconfirm>
           </IconsHolder>
         </FlexRowBox>
         <ul>{childAlbums.map((childAlbum) => renderAlbum(childAlbum))}</ul>
