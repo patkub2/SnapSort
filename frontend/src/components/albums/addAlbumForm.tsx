@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Form, Input } from "antd";
+import { Modal, Button, Form, Input, message } from "antd";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { displayedAlbums } from "../nav/navigation";
@@ -29,12 +29,12 @@ const AddAlbumForm: React.FC<Props> = ({
           },
         }
       );
-      await getAllAlbums(session?.user.token)
-        .then((res) => updateAlbums(res.data))
-        .catch((error) => console.log(error));
+      await getAllAlbums(session?.user.token).then((res) =>
+        updateAlbums(res.data)
+      );
       onCancel();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      message.error(error.response.data.message);
     }
   };
 
