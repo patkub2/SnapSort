@@ -2,13 +2,20 @@ import React from "react";
 import { Modal, Button, Form, Input } from "antd";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { displayedAlbums } from "../nav/navigation";
+import { getAllAlbums } from "@/store/requests";
 
 interface Props {
   modalIsActive: boolean;
   onCancel: () => void;
+  updateAlbums: (albums: displayedAlbums[]) => void;
 }
 
-const AddAlbumForm: React.FC<Props> = ({ modalIsActive, onCancel }) => {
+const AddAlbumForm: React.FC<Props> = ({
+  modalIsActive,
+  onCancel,
+  updateAlbums,
+}) => {
   const { data: session } = useSession();
   const onSubmitHandler = async (values: any) => {
     console.log(values);
@@ -23,6 +30,9 @@ const AddAlbumForm: React.FC<Props> = ({ modalIsActive, onCancel }) => {
           },
         }
       );
+      await getAllAlbums(session?.user.token)
+        .then((res) => updateAlbums(res.data))
+        .catch((error) => console.log(error));
       onCancel();
     } catch (error) {
       console.log(error);

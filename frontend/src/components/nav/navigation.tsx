@@ -124,7 +124,7 @@ interface Props {
   getAlbumId: (id: number) => void;
 }
 
-interface displayedAlbums {
+export interface displayedAlbums {
   name: string;
   id: number;
   parent: number | null;
@@ -157,6 +157,10 @@ const Navigation: React.FC<Props> = ({ getAlbumId }) => {
     fetchData();
   }, []);
   const testTags = ["Beka", "gg", "whot"];
+
+  const updateAlbums = (albums: displayedAlbums[]) => {
+    setDisplayedAlbums(albums);
+  };
 
   const addAlbumHandler = () => {
     setIsAlbumModalActive(true);
@@ -196,6 +200,7 @@ const Navigation: React.FC<Props> = ({ getAlbumId }) => {
           <AddAlbumForm
             modalIsActive={isAlbumModalActive}
             onCancel={() => setIsAlbumModalActive(false)}
+            updateAlbums={updateAlbums}
           />
         )}
         <Albums>
