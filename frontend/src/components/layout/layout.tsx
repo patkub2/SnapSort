@@ -71,7 +71,7 @@ const Layout = () => {
         displayedAlbums={displayedAlbums}
         displayedTags={displayedTags}
       />
-      <MainView selectedAlbum={selectedAlbum} />
+      <MainView selectedAlbum={selectedAlbum} displayedTags={displayedTags} />
     </Box>
   );
 };

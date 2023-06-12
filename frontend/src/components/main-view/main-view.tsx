@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 import Gallery from "./main-view-gallery";
 
-import TEST_TAGS from "../../helpers/test-tags-data.json";
 import { ImageType } from "@/interfaces/image";
+import { displayedTags } from "@/interfaces/tag";
 
 const MainBox = styled.div`
   width: 80%;
@@ -19,15 +19,16 @@ const Box1 = styled.div`
 
 interface Props {
   selectedAlbum: ImageType[];
+  displayedTags: displayedTags[];
 }
 
-const MainView: React.FC<Props> = ({ selectedAlbum }) => {
+const MainView: React.FC<Props> = ({ selectedAlbum, displayedTags }) => {
   const [tagSearchOptions, setTagSearchOptions] = useState<{ value: string }[]>(
     []
   );
 
-  const mappedTagSearchOptions = TEST_TAGS.map((tag) => ({
-    value: tag.tagName,
+  const mappedTagSearchOptions = displayedTags.map((tag) => ({
+    value: tag.name,
   }));
 
   const onChangeTagHandler = (inputValue: string) => {
