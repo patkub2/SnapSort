@@ -1,10 +1,14 @@
+import { Fragment, useState } from "react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
 import { message, Popconfirm } from "antd";
-import { AlbumText, Icon } from "../nav/navigation";
+
+import AddSubAlbumForm from "./addSubAlbumForm";
+
 import { deleteAlbumById, getAllAlbums } from "@/store/requests";
-import { useSession } from "next-auth/react";
-import { displayedAlbums } from "../nav/navigation";
+import { AlbumText, Icon } from "../nav/navigation";
+import { displayedAlbums } from "@/interfaces/album";
 
 const FlexRowBox = styled.div`
   display: flex;
@@ -20,6 +24,11 @@ const FlexRowBox = styled.div`
     background-color: #fff;
     cursor: pointer;
   }
+`;
+
+const FlexRowBox2 = styled(FlexRowBox)`
+  margin-left: 0.7rem;
+  width: 89%;
 `;
 
 const IconsHolder = styled.div`
@@ -46,27 +55,18 @@ const AlbumHolder = styled.div`
   white-space: nowrap;
 `;
 
-interface Album {
-  name: string;
-  id: number;
-  parent: number | null;
-}
-
-interface AlbumListProps {
-  albums: Album[];
+interface Props {
+  albums: displayedAlbums[];
   getAlbumId: (id: number) => void;
   updateAlbums: (albums: displayedAlbums[]) => void;
 }
 
-const AlbumList: React.FC<AlbumListProps> = ({
-  albums,
-  getAlbumId,
-  updateAlbums,
-}) => {
+const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
+  const [isAlbumModalActive, setIsAlbumModalActive] = useState<boolean>(false);
+  const [clickedParentId, setClickedParentId] = useState<number>();
   const { data: session } = useSession();
-  const renderAlbum = (album: Album) => {
+  const renderAlbum = (album: displayedAlbums) => {
     const deleteHandler = async (e: any) => {
-      console.log(e);
       try {
         await deleteAlbumById(album.id, session?.user.token);
         await getAllAlbums(session?.user.token)
@@ -77,7 +77,12 @@ const AlbumList: React.FC<AlbumListProps> = ({
         message.error("Something went wrong.");
       }
     };
-    const childAlbums = albums.filter((a) => a.parent === album.id);
+    const childAlbums = albums.filter((a) => a?.parent?.id === album.id);
+
+    const addAlbumHandler = (parentId: number) => {
+      setIsAlbumModalActive(true);
+      setClickedParentId(parentId);
+    };
 
     if (childAlbums.length === 0) {
       return (
@@ -116,6 +121,18 @@ const AlbumList: React.FC<AlbumListProps> = ({
               </Popconfirm>
             </IconsHolder>
           </FlexRowBox>
+          {!album.id ||
+            (!album.parent?.id && (
+              <FlexRowBox2 onClick={() => addAlbumHandler(album.id)}>
+                <Icon
+                  src="icons/cross.svg"
+                  alt="Cross icon"
+                  width={10}
+                  height={10}
+                ></Icon>
+                <AlbumText>New album</AlbumText>
+              </FlexRowBox2>
+            ))}
         </li>
       );
     }
@@ -156,12 +173,36 @@ const AlbumList: React.FC<AlbumListProps> = ({
             </Popconfirm>
           </IconsHolder>
         </FlexRowBox>
-        <ul>{childAlbums.map((childAlbum) => renderAlbum(childAlbum))}</ul>
+        <ul>
+          {childAlbums.map((childAlbum) => renderAlbum(childAlbum))}
+
+          <FlexRowBox onClick={() => addAlbumHandler(album.id)}>
+            <Icon
+              src="icons/cross.svg"
+              alt="Cross icon"
+              width={10}
+              height={10}
+            ></Icon>
+            <AlbumText>New album</AlbumText>
+          </FlexRowBox>
+        </ul>
       </li>
     );
   };
   const rootAlbums = albums?.filter((album) => album.parent === null);
-  return <ul>{rootAlbums?.map((album) => renderAlbum(album))}</ul>;
+  return (
+    <Fragment>
+      <ul>{rootAlbums?.map((album) => renderAlbum(album))}</ul>
+      {isAlbumModalActive && (
+        <AddSubAlbumForm
+          modalIsActive={isAlbumModalActive}
+          parentId={clickedParentId}
+          onCancel={() => setIsAlbumModalActive(false)}
+          updateAlbums={updateAlbums}
+        />
+      )}
+    </Fragment>
+  );
 };
 
 export default AlbumList;
