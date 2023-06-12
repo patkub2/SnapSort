@@ -1,9 +1,10 @@
 import React from "react";
+import { useSession } from "next-auth/react";
 import { Modal, Button, Form, Input, message } from "antd";
 import axios from "axios";
-import { useSession } from "next-auth/react";
-import { displayedAlbums } from "../nav/navigation";
+
 import { getAllAlbums } from "@/store/requests";
+import { displayedAlbums } from "@/interfaces/album";
 
 interface Props {
   modalIsActive: boolean;

@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import Gallery from "./main-view-gallery";
 import { AutoComplete } from "antd";
+import styled from "styled-components";
+
+import Gallery from "./main-view-gallery";
 
 import TEST_TAGS from "../../helpers/test-tags-data.json";
-import TEST_IMAGES from "../../helpers/test-images-data.json";
+import { ImageType } from "@/interfaces/image";
 
 const MainBox = styled.div`
   width: 80%;
+  height: 100vh;
 `;
 const Box1 = styled.div`
   display: flex;
@@ -15,7 +17,11 @@ const Box1 = styled.div`
   padding: 0.8rem 1.6rem;
 `;
 
-const MainView = () => {
+interface Props {
+  selectedAlbum: ImageType[];
+}
+
+const MainView: React.FC<Props> = ({ selectedAlbum }) => {
   const [tagSearchOptions, setTagSearchOptions] = useState<{ value: string }[]>(
     []
   );
@@ -45,7 +51,7 @@ const MainView = () => {
           allowClear
         />
       </Box1>
-      <Gallery images={TEST_IMAGES} />
+      <Gallery images={selectedAlbum} />
     </MainBox>
   );
 };

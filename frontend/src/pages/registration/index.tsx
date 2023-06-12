@@ -1,5 +1,4 @@
-import { Fragment, useState } from "react";
-import { getSession } from "next-auth/react";
+import { Fragment } from "react";
 
 import RegistrationForm from "@/components/registration/registration-form";
 
