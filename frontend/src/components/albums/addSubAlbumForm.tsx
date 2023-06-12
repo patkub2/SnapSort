@@ -8,21 +8,23 @@ import { displayedAlbums } from "@/interfaces/album";
 
 interface Props {
   modalIsActive: boolean;
+  parentId: number | undefined;
   onCancel: () => void;
   updateAlbums: (albums: displayedAlbums[]) => void;
 }
 
-const AddAlbumForm: React.FC<Props> = ({
+const AddSubAlbumForm: React.FC<Props> = ({
   modalIsActive,
   onCancel,
   updateAlbums,
+  parentId,
 }) => {
   const { data: session } = useSession();
   const onSubmitHandler = async (values: any) => {
     try {
       await axios.post(
         "http://localhost:8080/api/albums/create",
-        { name: values.album },
+        { name: values.album, parent: { id: parentId } },
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,4 +63,4 @@ const AddAlbumForm: React.FC<Props> = ({
   );
 };
 
-export default AddAlbumForm;
+export default AddSubAlbumForm;

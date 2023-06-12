@@ -1,13 +1,14 @@
 import React, { ReactElement, useState } from "react";
+import { getCsrfToken, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import YupPassword from "yup-password";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
 } from "next";
-import { getCsrfToken } from "next-auth/react";
-import { signIn } from "next-auth/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import YupPassword from "yup-password";
+
 import {
   Box,
   StyledForm,
@@ -18,7 +19,6 @@ import {
   LoginLink,
   ErrorMessage,
 } from "../registration/registration-form";
-import { useRouter } from "next/router";
 
 YupPassword(Yup);
 

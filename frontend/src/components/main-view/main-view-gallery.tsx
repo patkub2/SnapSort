@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Pin from "./pin";
 import styled from "styled-components";
+
+import Pin from "./pin";
+
+import { ImageType } from "@/interfaces/image";
 
 const PinContainer = styled.div`
   margin-top: 1rem;
@@ -14,11 +17,7 @@ const PinContainer = styled.div`
 `;
 
 interface Props {
-  images: {
-    id: number;
-    url: string;
-    description: string;
-  }[];
+  images: ImageType[];
 }
 const sizes = ["small", "medium", "big"];
 
@@ -26,15 +25,25 @@ const Gallery: React.FC<Props> = ({ images }) => {
   const [mappedImages, setMappedImages] = useState<JSX.Element[]>([]);
 
   useEffect(() => {
-    const maped = images.map((image) => {
-      const random = Math.floor(Math.random() * sizes.length);
-      return (
-        <Pin size={sizes[random]} key={image.id}>
-          <Image src={image.url} alt={image.description} fill />
-        </Pin>
-      );
-    });
-    setMappedImages(maped);
+    let mapped: any;
+    if (images.length > 0) {
+      mapped = images?.map((image) => {
+        const random = Math.floor(Math.random() * sizes.length);
+        return (
+          <Pin size={sizes[random]} key={image.id}>
+            <Image
+              src={image.thumbnailData.data}
+              alt={image.description}
+              fill
+            />
+          </Pin>
+        );
+      });
+    } else {
+      mapped = <p>Select the album to view images.</p>;
+    }
+
+    setMappedImages(mapped);
   }, [images]);
 
   return <PinContainer>{mappedImages}</PinContainer>;
