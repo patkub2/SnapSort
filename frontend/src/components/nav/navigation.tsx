@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import styled from "styled-components";
-import { getSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import UploadForm from "./uploadForm";
 import AlbumList from "../albums/albumList";
 import AddAlbumForm from "../albums/addAlbumForm";
-import { getAllAlbums, getAllTags } from "@/store/requests";
+import { displayedAlbums } from "@/interfaces/album";
+import { displayedTags } from "@/interfaces/tag";
 
 const Box = styled.div`
   width: 20%;
@@ -40,7 +41,7 @@ const LogoText = styled.p`
   font-size: 1.5rem;
 `;
 
-const AddAlbum = styled.div`
+export const AddAlbum = styled.div`
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -121,46 +122,21 @@ const FooterOption = styled.div`
 `;
 
 interface Props {
+  displayedAlbums: displayedAlbums[];
+  displayedTags: displayedTags[];
   getAlbumId: (id: number) => void;
+  updateAlbums: (albums: displayedAlbums[]) => void;
 }
 
-export interface displayedAlbums {
-  name: string;
-  id: number;
-  parent: number | null;
-}
-
-interface displayedTags {
-  name: string;
-  id: number;
-}
-
-const Navigation: React.FC<Props> = ({ getAlbumId }) => {
+const Navigation: React.FC<Props> = ({
+  getAlbumId,
+  updateAlbums,
+  displayedAlbums,
+  displayedTags,
+}) => {
   const [isUploadModalActive, setIsUploadModalActive] =
     useState<boolean>(false);
   const [isAlbumModalActive, setIsAlbumModalActive] = useState<boolean>(false);
-  const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
-  const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const session = await getSession();
-      if (session) {
-        getAllAlbums(session.user.token)
-          .then((res) => setDisplayedAlbums(res.data))
-          .catch((error) => console.log(error));
-
-        getAllTags(session.user.token)
-          .then((res) => setDisplayedTags(res.data))
-          .catch((error) => console.log(error));
-      }
-    };
-    fetchData();
-  }, []);
-  const testTags = ["Beka", "gg", "whot"];
-
-  const updateAlbums = (albums: displayedAlbums[]) => {
-    setDisplayedAlbums(albums);
-  };
 
   const addAlbumHandler = () => {
     setIsAlbumModalActive(true);
