@@ -1,9 +1,10 @@
 import React from "react";
 import { useSession } from "next-auth/react";
-import { Modal, Upload, Button, Form, Select } from "antd";
+import { Modal, Upload, Button, Form, Select, message } from "antd";
 import styled from "styled-components";
 
-import { uploadMultipleImages } from "@/store/requests";
+import { getAllTags, uploadMultipleImages } from "@/store/requests";
+import { displayedTags } from "@/interfaces/tag";
 
 const Container = styled.div`
   display: flex;
@@ -18,15 +19,17 @@ const Box = styled(Container)`
 
 interface Props {
   modalIsActive: boolean;
-  onCancel: () => void;
   allAlbums: { name: string; id: number }[];
   allTags: string[];
+  onCancel: () => void;
+  updateTags: (tag: displayedTags[]) => void;
 }
 
 const UploadForm: React.FC<Props> = ({
   modalIsActive,
   onCancel,
   allAlbums,
+  updateTags,
   allTags,
 }) => {
   const { data: session } = useSession();
@@ -37,25 +40,23 @@ const UploadForm: React.FC<Props> = ({
   const tagOptions = allTags?.map((tag) => ({ value: tag }));
 
   const onSubmitHandler = async (values: any) => {
-    console.log(values);
-    const joinedTags = values.tags.join(",");
-    console.log(joinedTags);
+    const joinedTags = values.tags
+      ? JSON.stringify(values.tags.join(",")).slice(1, -1)
+      : "";
 
     const formData = new FormData();
     formData.append("albumId", values.album.toString());
-    formData.append("tags", JSON.stringify(joinedTags).slice(1, -1));
+    formData.append("tags", joinedTags);
     values?.files?.forEach((file: any) => {
       formData.append(`files`, file.originFileObj);
     });
-
     try {
-      const response = await uploadMultipleImages(
-        formData,
-        session?.user.token
-      );
-      console.log(response.data);
+      await uploadMultipleImages(formData, session?.user.token);
+      await getAllTags(session?.user.token).then((res) => updateTags(res.data));
+      message.success("Images uploaded successfully");
+      onCancel();
     } catch (error) {
-      console.log(error);
+      message.error("Failed to upload images");
     }
   };
 
@@ -69,7 +70,10 @@ const UploadForm: React.FC<Props> = ({
     >
       <Container>
         <Form onFinish={onSubmitHandler}>
-          <Form.Item name="album">
+          <Form.Item
+            name="album"
+            rules={[{ required: true, message: "Please select the album" }]}
+          >
             <Select options={albumOptions} placeholder="Select the album" />
           </Form.Item>
           <Form.Item name="tags">
@@ -84,6 +88,9 @@ const UploadForm: React.FC<Props> = ({
             name="files"
             valuePropName="fileList"
             getValueFromEvent={(event) => event?.fileList}
+            rules={[
+              { required: true, message: "Please select at least one image" },
+            ]}
           >
             <Upload.Dragger
               multiple
