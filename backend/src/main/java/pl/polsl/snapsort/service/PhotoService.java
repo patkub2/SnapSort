@@ -12,9 +12,12 @@ public interface PhotoService {
 
     Photo getPhotoById(Long id);
 
-    List<byte[]> getAllThumbnailDataByUserIdAndAlbumId(Long userId, Long albumId);
 
     boolean existsPhotoByIdAndUserId(Long photoId, Long userId);
 
-    List<byte[]> getAllThumbnailDataByUserId(Long userId);
+
+
+    List<Photo> getPhotosByUserId(Long userId);
+
+    List<Photo> getPhotosByUserIdAndAlbumId(Long userId, Long albumId);
 }

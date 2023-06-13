@@ -14,6 +14,7 @@ import pl.polsl.snapsort.service.JwtTokenUtil;
 import pl.polsl.snapsort.service.PhotoService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,10 +125,38 @@ public class AlbumController {
         }
     }
 
-
+    @Transactional
     @DeleteMapping("/{id}")
-    public void deleteAlbum(@PathVariable Long id) {
+    public void deleteAlbum(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+
+        // Check if the album belongs to the logged-in user
+        boolean albumBelongsToUser = albumService.existsAlbumByIdAndUserId(id, userId);
+        if (!albumBelongsToUser) {
+            throw new AlbumNotFoundException("Album not found or does not belong to the user.");
+        }
+
         albumService.deleteAlbum(id);
     }
+
+    @PutMapping("/{id}/rename")
+    public Album renameAlbum(@RequestHeader("Authorization") String token,@PathVariable Long id, @RequestBody Album album) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+
+        // Check if the album name is in use already
+        boolean albumExists = albumService.existsAlbumByNameAndUserId(album.getName(), userId);
+        if (albumExists) {
+            throw new DuplicateAlbumNameException("Album name already exists for the user.");
+        }
+        // Check if the album exists
+        Album existingAlbum = albumService.getAlbumById(id).orElseThrow(() -> new AlbumNotFoundException("Album not found."));
+
+        // Update the album name
+        existingAlbum.setName(album.getName());
+
+        // Save the updated album
+        return albumService.updateAlbum(existingAlbum);
+    }
+
 }
 

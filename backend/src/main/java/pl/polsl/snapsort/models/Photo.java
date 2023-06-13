@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -34,6 +35,17 @@ public class Photo {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "upload_date")
+    private LocalDateTime uploadDate;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "width")
+    private int width;
+
+    @Column(name = "height")
+    private int height;
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore

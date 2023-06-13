@@ -12,10 +12,9 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     // Add custom query methods or use default methods provided by JpaRepository
     boolean existsByIdAndUserId(Long photoId, Long userId);
 
-    @Query ("SELECT t.data FROM Photo p JOIN p.thumbnailData t WHERE p.user.id = :userId")
-    List<byte[]> getAllThumbnailDataByUserId(@Param ("userId") Long userId);
+    @Query("SELECT p FROM Photo p WHERE p.user.id = :userId")
+    List<Photo> findByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT t.data FROM Photo p JOIN p.thumbnailData t JOIN p.albumPhotos ap WHERE p.user.id = :userId AND ap.album.id = :albumId")
-    List<byte[]> getAllThumbnailDataByUserIdAndAlbumId(@Param("userId") Long userId, @Param("albumId") Long albumId);
-
+    @Query("SELECT p FROM Photo p JOIN p.albumPhotos ap WHERE p.user.id = :userId AND ap.album.id = :albumId")
+    List<Photo> findByUserIdAndAlbumId(@Param("userId") Long userId, @Param("albumId") Long albumId);
 }

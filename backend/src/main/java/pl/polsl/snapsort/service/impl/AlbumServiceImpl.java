@@ -1,10 +1,12 @@
 package pl.polsl.snapsort.service.impl;
 
+import pl.polsl.snapsort.exceptions.AlbumNotFoundException;
 import pl.polsl.snapsort.models.Album;
 import pl.polsl.snapsort.models.AlbumPhoto;
 import pl.polsl.snapsort.models.Photo;
 import pl.polsl.snapsort.repository.AlbumPhotoRepository;
 import pl.polsl.snapsort.repository.AlbumRepository;
+import pl.polsl.snapsort.service.AlbumPhotoService;
 import pl.polsl.snapsort.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,13 @@ public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository;
     private final AlbumPhotoRepository albumPhotoRepository;
 
+    private final AlbumPhotoService albumPhotoService;
+
     @Autowired
-    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumPhotoRepository albumPhotoRepository) {
+    public AlbumServiceImpl(AlbumRepository albumRepository, AlbumPhotoRepository albumPhotoRepository, AlbumPhotoService albumPhotoService) {
         this.albumRepository = albumRepository;
         this.albumPhotoRepository = albumPhotoRepository;
+        this.albumPhotoService = albumPhotoService;
     }
 
 
@@ -50,8 +55,15 @@ public class AlbumServiceImpl implements AlbumService {
 
 
     @Override
-    public void deleteAlbum(Long id) {
-        albumRepository.deleteById(id);
+    public void deleteAlbum(Long albumId) {
+        // Check if the album exists
+        Album album = getAlbumById(albumId).orElseThrow(() -> new AlbumNotFoundException("Album not found."));
+
+        // Delete the album's connection to photos
+        albumPhotoService.deleteAlbumPhotosByAlbumId(albumId);
+
+        // Delete the album
+        albumRepository.delete(album);
     }
 
     public boolean existsAlbumByNameAndUserId(String name, Long userId) {
