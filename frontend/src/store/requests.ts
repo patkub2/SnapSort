@@ -23,3 +23,15 @@ export const deleteAlbumById = (id: number, token: string | undefined) => {
     },
   });
 };
+
+export const uploadMultipleImages = (
+  imageData: FormData,
+  token: string | undefined
+) => {
+  return axios.post("http://localhost:8080/photos/upload/multiple", imageData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multiple/form-data",
+    },
+  });
+};
