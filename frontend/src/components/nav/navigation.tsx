@@ -124,6 +124,7 @@ const FooterOption = styled.div`
 interface Props {
   displayedAlbums: displayedAlbums[];
   displayedTags: displayedTags[];
+  updateTags: (tag: displayedTags[]) => void;
   getAlbumId: (id: number) => void;
   updateAlbums: (albums: displayedAlbums[]) => void;
 }
@@ -132,6 +133,7 @@ const Navigation: React.FC<Props> = ({
   getAlbumId,
   updateAlbums,
   displayedAlbums,
+  updateTags,
   displayedTags,
 }) => {
   const [isUploadModalActive, setIsUploadModalActive] =
@@ -248,6 +250,7 @@ const Navigation: React.FC<Props> = ({
             name: album.name,
             id: album.id,
           }))}
+          updateTags={updateTags}
           allTags={displayedTags.map((tag) => tag.name)}
         />
       )}
