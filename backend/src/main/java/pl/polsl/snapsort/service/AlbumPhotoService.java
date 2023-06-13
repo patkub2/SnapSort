@@ -7,4 +7,7 @@ public interface AlbumPhotoService {
     void addPhotoToAlbum(Album album, Photo photo);
 
     boolean existsPhotoInAlbum(Long photoId, Long albumId);
+
+
+    void deleteAlbumPhotosByAlbumId(Long albumId);
 }

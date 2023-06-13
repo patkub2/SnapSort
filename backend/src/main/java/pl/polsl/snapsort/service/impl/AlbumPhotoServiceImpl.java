@@ -16,7 +16,9 @@ public class AlbumPhotoServiceImpl implements AlbumPhotoService {
         this.albumPhotoRepository = albumPhotoRepository;
     }
 
-
+    public void deleteAlbumPhotosByAlbumId(Long albumId) {
+        albumPhotoRepository.deleteAlbumPhotosByAlbumId(albumId);
+    }
 
     public boolean existsPhotoInAlbum(Long photoId, Long albumId) {
         return albumPhotoRepository.existsByPhotoIdAndAlbumId(photoId, albumId);
