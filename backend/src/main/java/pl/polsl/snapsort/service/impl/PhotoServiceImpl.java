@@ -67,17 +67,18 @@ public class PhotoServiceImpl implements PhotoService {
                 .orElseThrow(() -> new EntityNotFoundException("Photo not found"));
     }
 
-    @Override
-    public List<byte[]> getAllThumbnailDataByUserId(Long userId) {
-        return photoRepository.getAllThumbnailDataByUserId(userId);
-    }
-
-    @Override
-    public List<byte[]> getAllThumbnailDataByUserIdAndAlbumId(Long userId, Long albumId) {
-        return photoRepository.getAllThumbnailDataByUserIdAndAlbumId(userId,albumId);
-    }
 
     public boolean existsPhotoByIdAndUserId(Long photoId, Long userId) {
         return photoRepository.existsByIdAndUserId(photoId, userId);
+    }
+
+    @Override
+    public List<Photo> getPhotosByUserId(Long userId) {
+        return photoRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Photo> getPhotosByUserIdAndAlbumId(Long userId, Long albumId) {
+        return photoRepository.findByUserIdAndAlbumId(userId, albumId);
     }
 }

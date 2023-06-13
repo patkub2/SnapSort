@@ -169,16 +169,38 @@ public class PhotoController {
         }
     }
 
-    @GetMapping("album/{albumId}/thumbnails")
-    public List<byte[]> getAllThumbnailDataForUserAndAlbum(@RequestHeader("Authorization") String token, @PathVariable Long albumId) {
+    @GetMapping("/thumbnails")
+    public List<ThumbnailResponse> getAllThumbnailsForUser(@RequestHeader("Authorization") String token) {
         Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
-        return photoService.getAllThumbnailDataByUserIdAndAlbumId(userId,albumId);
+        List<ThumbnailResponse> thumbnails = new ArrayList<>();
+
+        List<Photo> photos = photoService.getPhotosByUserId(userId);
+        for (Photo photo : photos) {
+            ThumbnailData thumbnailData = photo.getThumbnailData();
+            if (thumbnailData != null) {
+                ThumbnailResponse thumbnailResponse = new ThumbnailResponse(photo.getId(), thumbnailData.getData());
+                thumbnails.add(thumbnailResponse);
+            }
+        }
+
+        return thumbnails;
     }
 
-    @GetMapping("/thumbnails")
-    public List<byte[]> getAllThumbnailDataForUser(@RequestHeader("Authorization") String token) {
+    @GetMapping("/album/{albumId}/thumbnails")
+    public List<ThumbnailResponse> getAllThumbnailsForUserAndAlbum(@RequestHeader("Authorization") String token, @PathVariable Long albumId) {
         Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
-        return photoService.getAllThumbnailDataByUserId(userId);
+        List<ThumbnailResponse> thumbnails = new ArrayList<>();
+
+        List<Photo> photos = photoService.getPhotosByUserIdAndAlbumId(userId, albumId);
+        for (Photo photo : photos) {
+            ThumbnailData thumbnailData = photo.getThumbnailData();
+            if (thumbnailData != null) {
+                ThumbnailResponse thumbnailResponse = new ThumbnailResponse(photo.getId(), thumbnailData.getData());
+                thumbnails.add(thumbnailResponse);
+            }
+        }
+
+        return thumbnails;
     }
     // Endpoint to fetch a specific photo by ID
     @GetMapping ("/{id}")
