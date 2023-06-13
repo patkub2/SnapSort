@@ -244,7 +244,10 @@ const Navigation: React.FC<Props> = ({
         <UploadForm
           modalIsActive={isUploadModalActive}
           onCancel={() => setIsUploadModalActive(false)}
-          allAlbums={displayedAlbums.map((album) => album.name)}
+          allAlbums={displayedAlbums.map((album) => ({
+            name: album.name,
+            id: album.id,
+          }))}
           allTags={displayedTags.map((tag) => tag.name)}
         />
       )}
