@@ -51,6 +51,10 @@ const Layout = () => {
   const updateAlbums = (albums: displayedAlbums[]) => {
     setDisplayedAlbums(albums);
   };
+
+  const updateTags = (tags: displayedTags[]) => {
+    setDisplayedTags(tags);
+  };
   const getAlbumId = async (id: number) => {
     console.log(id);
     axios
@@ -69,6 +73,7 @@ const Layout = () => {
         getAlbumId={getAlbumId}
         updateAlbums={updateAlbums}
         displayedAlbums={displayedAlbums}
+        updateTags={updateTags}
         displayedTags={displayedTags}
       />
       <MainView selectedAlbum={selectedAlbum} displayedTags={displayedTags} />
