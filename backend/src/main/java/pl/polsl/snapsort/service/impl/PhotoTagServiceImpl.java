@@ -12,6 +12,8 @@ import pl.polsl.snapsort.service.PhotoTagService;
 import pl.polsl.snapsort.service.TagService;
 import pl.polsl.snapsort.service.UserService;
 
+import javax.transaction.Transactional;
+
 @Service
 public class PhotoTagServiceImpl implements PhotoTagService {
     private final PhotoTagRepository photoTagRepository;
@@ -86,5 +88,7 @@ public class PhotoTagServiceImpl implements PhotoTagService {
 
         return tagService.createTag(tag);
     }
+
+
 
 }

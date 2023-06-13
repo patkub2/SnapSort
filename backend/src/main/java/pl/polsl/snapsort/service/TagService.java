@@ -10,4 +10,8 @@ public interface TagService {
     boolean existsTagByNameAndUserId(String name, Long userId);
     Tag createTag(String tagName);
     List<Tag> getAllTagsByUserId(Long userId);
+
+    void deleteTagById(Long tagId);
+
+    Tag getTagById(Long tagId);
 }
