@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.snapsort.exceptions.AlbumNotFoundException;
 import pl.polsl.snapsort.models.*;
 import pl.polsl.snapsort.service.*;
+
+import java.util.Iterator;
+
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 
 
 @RestController
@@ -88,6 +99,13 @@ public class PhotoController {
                 photo.setThumbnailData(thumbnail);
                 photo.setUser(user);
 
+                // Set the additional information
+                photo.setUploadDate(LocalDateTime.now());
+                photo.setCreateDate(getFileCreationDate(file));
+                photo.setWidth(getImageWidth(file));
+                photo.setHeight(getImageHeight(file));
+
+
                 // Save the Photo entity in the Photo table
                 photo = photoService.createPhoto(photo);
 
@@ -152,6 +170,12 @@ public class PhotoController {
             photo.setDescription(description);
             photo.setPhotoData(photoData);
             photo.setThumbnailData(thumbnail);
+
+            // Set the additional information
+            photo.setUploadDate(LocalDateTime.now());
+            photo.setCreateDate(getFileCreationDate(file));
+            photo.setWidth(getImageWidth(file));
+            photo.setHeight(getImageHeight(file));
 
             // Retrieve the user from the database based on the user ID
             User user = userService.getUserById(userId);
@@ -266,6 +290,47 @@ public class PhotoController {
             return thumbnailData;
         }
     }
+    private int getImageWidth(MultipartFile file) throws IOException {
+        try (ImageInputStream in = ImageIO.createImageInputStream(file.getInputStream())) {
+            final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                try {
+                    reader.setInput(in);
+                    return reader.getWidth(0);
+                } finally {
+                    reader.dispose();
+                }
+            }
+        }
+        return 0;
+    }
 
+    private int getImageHeight(MultipartFile file) throws IOException {
+        try (ImageInputStream in = ImageIO.createImageInputStream(file.getInputStream())) {
+            final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                try {
+                    reader.setInput(in);
+                    return reader.getHeight(0);
+                } finally {
+                    reader.dispose();
+                }
+            }
+        }
+        return 0;
+    }
 
+    private LocalDateTime getFileCreationDate(MultipartFile file) throws IOException {
+        Path tempFilePath = Files.createTempFile("temp", file.getOriginalFilename());
+        file.transferTo(tempFilePath);
+
+        BasicFileAttributes attributes = Files.readAttributes(tempFilePath, BasicFileAttributes.class);
+        LocalDateTime creationDate = attributes.creationTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        Files.delete(tempFilePath);
+
+        return creationDate;
+    }
 }
