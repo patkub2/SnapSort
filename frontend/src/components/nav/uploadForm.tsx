@@ -1,6 +1,9 @@
 import React from "react";
+import { useSession } from "next-auth/react";
 import { Modal, Upload, Button, Form, Select } from "antd";
 import styled from "styled-components";
+
+import { uploadMultipleImages } from "@/store/requests";
 
 const Container = styled.div`
   display: flex;
@@ -16,7 +19,7 @@ const Box = styled(Container)`
 interface Props {
   modalIsActive: boolean;
   onCancel: () => void;
-  allAlbums: string[];
+  allAlbums: { name: string; id: number }[];
   allTags: string[];
 }
 
@@ -26,11 +29,34 @@ const UploadForm: React.FC<Props> = ({
   allAlbums,
   allTags,
 }) => {
-  const albumOptions = allAlbums?.map((album) => ({ value: album }));
+  const { data: session } = useSession();
+  const albumOptions = allAlbums?.map((album) => ({
+    value: album.id,
+    label: album.name,
+  }));
   const tagOptions = allTags?.map((tag) => ({ value: tag }));
 
-  const onSubmitHandler = (values: any) => {
+  const onSubmitHandler = async (values: any) => {
     console.log(values);
+    const joinedTags = values.tags.join(",");
+    console.log(joinedTags);
+
+    const formData = new FormData();
+    formData.append("albumId", values.album.toString());
+    formData.append("tags", JSON.stringify(joinedTags).slice(1, -1));
+    values?.files?.forEach((file: any) => {
+      formData.append(`files`, file.originFileObj);
+    });
+
+    try {
+      const response = await uploadMultipleImages(
+        formData,
+        session?.user.token
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -55,7 +81,7 @@ const UploadForm: React.FC<Props> = ({
             />
           </Form.Item>
           <Form.Item
-            name={"pictures"}
+            name="files"
             valuePropName="fileList"
             getValueFromEvent={(event) => event?.fileList}
           >
