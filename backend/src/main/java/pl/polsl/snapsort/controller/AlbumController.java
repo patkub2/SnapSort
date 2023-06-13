@@ -139,5 +139,24 @@ public class AlbumController {
         albumService.deleteAlbum(id);
     }
 
+    @PutMapping("/{id}/rename")
+    public Album renameAlbum(@RequestHeader("Authorization") String token,@PathVariable Long id, @RequestBody Album album) {
+        Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+
+        // Check if the album name is in use already
+        boolean albumExists = albumService.existsAlbumByNameAndUserId(album.getName(), userId);
+        if (albumExists) {
+            throw new DuplicateAlbumNameException("Album name already exists for the user.");
+        }
+        // Check if the album exists
+        Album existingAlbum = albumService.getAlbumById(id).orElseThrow(() -> new AlbumNotFoundException("Album not found."));
+
+        // Update the album name
+        existingAlbum.setName(album.getName());
+
+        // Save the updated album
+        return albumService.updateAlbum(existingAlbum);
+    }
+
 }
 

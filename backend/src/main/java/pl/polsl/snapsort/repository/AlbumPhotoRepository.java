@@ -14,6 +14,6 @@ public interface AlbumPhotoRepository extends JpaRepository<AlbumPhoto, Long> {
     List<AlbumPhoto> findAllByAlbumId(Long albumId);
 
     boolean existsByPhotoIdAndAlbumId(Long photoId, Long albumId);
-    
+
     void deleteAlbumPhotosByAlbumId(Long albumId);
 }
