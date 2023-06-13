@@ -210,35 +210,38 @@ public class PhotoController {
 
     private byte[] generateThumbnail(MultipartFile file) throws IOException {
         try (InputStream inputStream = file.getInputStream()) {
-        // Load the original image
-        BufferedImage originalImage = ImageIO.read(inputStream);
+            // Load the original image
+            BufferedImage originalImage = ImageIO.read(inputStream);
 
-        // Define the desired thumbnail size
-        int thumbnailWidth = 200;
-        int thumbnailHeight = 200;
+            // Define the desired thumbnail width
+            int thumbnailWidth = 250;
 
-        // Create a thumbnail image with the desired size
-        BufferedImage thumbnailImage = new BufferedImage(thumbnailWidth, thumbnailHeight, BufferedImage.TYPE_INT_RGB);
+            // Calculate the thumbnail height while preserving the aspect ratio
+            int originalWidth = originalImage.getWidth();
+            int originalHeight = originalImage.getHeight();
+            int thumbnailHeight = (int) ((double) originalHeight / originalWidth * thumbnailWidth);
 
-        // Resize the original image to fit the thumbnail size
-        Graphics2D graphics2D = thumbnailImage.createGraphics();
-        graphics2D.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
-        graphics2D.dispose();
+            // Create a thumbnail image with the desired size
+            BufferedImage thumbnailImage = new BufferedImage(thumbnailWidth, thumbnailHeight, BufferedImage.TYPE_INT_RGB);
 
-        // Compress the thumbnail image into a byte array
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(thumbnailImage, "JPEG", outputStream);
+            // Resize the original image to fit the thumbnail size
+            Graphics2D graphics2D = thumbnailImage.createGraphics();
+            graphics2D.drawImage(originalImage, 0, 0, thumbnailWidth, thumbnailHeight, null);
+            graphics2D.dispose();
 
-        // Get the compressed thumbnail data as a byte array
-        byte[] thumbnailData = outputStream.toByteArray();
+            // Compress the thumbnail image into a byte array
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(thumbnailImage, "JPEG", outputStream);
 
-        // Close the streams
-        inputStream.close();
-        outputStream.close();
+            // Get the compressed thumbnail data as a byte array
+            byte[] thumbnailData = outputStream.toByteArray();
 
-        // Return the thumbnail data
-        return thumbnailData;
+            // Close the streams
+            inputStream.close();
+            outputStream.close();
 
+            // Return the thumbnail data
+            return thumbnailData;
         }
     }
 
