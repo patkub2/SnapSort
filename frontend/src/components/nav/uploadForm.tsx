@@ -57,7 +57,7 @@ const UploadForm: React.FC<Props> = ({
       onCancel();
     } catch (error: any) {
       message.error(
-        error.response.data.message ?? "Failed to upload the images."
+        error.response.data.message ?? "Failed to upload the images"
       );
     }
   };

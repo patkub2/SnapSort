@@ -37,7 +37,7 @@ const AddSubAlbumForm: React.FC<Props> = ({
       );
       onCancel();
     } catch (error: any) {
-      message.error(error.response.data.message);
+      message.error(error.response.data.message ?? "Something went wrong");
     }
   };
 

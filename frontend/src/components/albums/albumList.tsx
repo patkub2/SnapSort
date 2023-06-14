@@ -79,7 +79,7 @@ const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
         );
         message.success("The album was deleted.");
       } catch (error: any) {
-        message.error(error.response.data.message);
+        message.error(error.response.data.message ?? "Something went wrong");
       }
     };
 

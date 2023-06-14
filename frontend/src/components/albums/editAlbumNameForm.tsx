@@ -37,7 +37,7 @@ const EditAlbumNameForm: React.FC<Props> = ({
       message.success("Album name was edited");
       onCancel();
     } catch (error: any) {
-      message.error(error.response.data.message);
+      message.error(error.response.data.message ?? "Something went wrong");
     }
   };
 
