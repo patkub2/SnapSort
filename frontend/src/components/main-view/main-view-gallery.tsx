@@ -81,6 +81,7 @@ const Gallery: React.FC<Props> = ({ images }) => {
           {previewImages?.map((image) => {
             return (
               <Image
+                key={image.id}
                 style={{ display: "none" }}
                 src={`data:image/jpeg;base64,${image.data}`}
               />
