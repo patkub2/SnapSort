@@ -9,6 +9,7 @@ import { displayedTags } from "@/interfaces/tag";
 
 const MainBox = styled.div`
   width: 80%;
+  margin: 0 auto;
 `;
 const Box1 = styled.div`
   display: flex;
