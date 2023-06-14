@@ -9,7 +9,29 @@ import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
 
 const Box = styled.div`
-  width: 20%;
+  @media (min-width: 1201px) {
+    width: 15rem;
+  }
+
+  @media (min-width: 1025px) and (max-width: 1200px) {
+    width: 14rem;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 13rem;
+  }
+
+  @media (min-width: 768px) and (max-width: 1024px) {
+    width: 12rem;
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    width: 11rem;
+  }
+
+  @media (max-width: 575px) {
+    width: 10rem;
+  }
 `;
 
 const InnerBox = styled.div`

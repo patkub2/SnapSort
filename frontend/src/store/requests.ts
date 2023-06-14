@@ -43,3 +43,11 @@ export const getThumbnailsById = (id: number, token: string | undefined) => {
     },
   });
 };
+
+export const getPhotoById = (id: number, token: string | undefined) => {
+  return axios.get(`http://localhost:8080/photos/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

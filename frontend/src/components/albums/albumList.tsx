@@ -50,6 +50,7 @@ const IconsHolder = styled.div`
 const AlbumHolder = styled.div`
   display: flex;
   align-items: center;
+  width: 80%;
 
   overflow: hidden;
   text-overflow: ellipsis;

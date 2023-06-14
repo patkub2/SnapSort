@@ -46,7 +46,6 @@ const Layout = () => {
     setDisplayedTags(tags);
   };
   const getAlbumId = async (id: number) => {
-    console.log(id);
     try {
       getThumbnailsById(id, session?.user.token).then((res) =>
         setSelectedAlbumThumbnails(res.data)
