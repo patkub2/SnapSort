@@ -1,52 +1,42 @@
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React from "react";
 import styled from "styled-components";
+import { Image } from "antd";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
-import Pin from "./pin";
+import { ThumbnailType } from "@/interfaces/image";
 
-import { ImageType } from "@/interfaces/image";
+const Container = styled.div`
+  margin: 1rem 2rem;
+  height: 100%;
+`;
 
-const PinContainer = styled.div`
-  margin-top: 1rem;
-  padding: 1.5rem;
-
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 15.625rem);
-  grid-auto-rows: 0.625rem;
-  justify-content: center;
+const CustomImage = styled(Image)`
+  border-radius: 5px;
 `;
 
 interface Props {
-  images: ImageType[];
+  images: ThumbnailType[];
 }
-const sizes = ["small", "medium", "big"];
 
 const Gallery: React.FC<Props> = ({ images }) => {
-  const [mappedImages, setMappedImages] = useState<JSX.Element[]>([]);
+  const mappedThumbnails = images.map((image, index) => {
+    return (
+      <CustomImage
+        key={index}
+        src={`data:image/jpeg;base64,${image.thumbnailData}`}
+      />
+    );
+  });
 
-  useEffect(() => {
-    let mapped: any;
-    if (images.length > 0) {
-      mapped = images?.map((image) => {
-        const random = Math.floor(Math.random() * sizes.length);
-        return (
-          <Pin size={sizes[random]} key={image.id}>
-            <Image
-              src={image.thumbnailData.data}
-              alt={image.description}
-              fill
-            />
-          </Pin>
-        );
-      });
-    } else {
-      mapped = <p>Select the album to view images.</p>;
-    }
-
-    setMappedImages(mapped);
-  }, [images]);
-
-  return <PinContainer>{mappedImages}</PinContainer>;
+  return (
+    <Container>
+      <ResponsiveMasonry
+        columnsCountBreakPoints={{ 350: 1, 600: 2, 850: 3, 1230: 4, 1600: 5 }}
+      >
+        <Masonry gutter="1rem">{mappedThumbnails}</Masonry>
+      </ResponsiveMasonry>
+    </Container>
+  );
 };
 
 export default Gallery;

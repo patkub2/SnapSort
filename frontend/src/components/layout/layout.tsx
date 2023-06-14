@@ -1,35 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import styled from "styled-components";
-import axios from "axios";
 
 import Navigation from "../nav/navigation";
 import MainView from "../main-view/main-view";
 
-import { getAllAlbums, getAllTags } from "@/store/requests";
+import { getAllAlbums, getAllTags, getThumbnailsById } from "@/store/requests";
 import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
+import { message } from "antd";
+import { ThumbnailType } from "@/interfaces/image";
 
 const Box = styled.div`
   display: flex;
 `;
 
-interface Image {
-  id: number;
-  photoData: {
-    id: number;
-    data: string;
-  };
-  thumbnailData: {
-    id: number;
-    data: string;
-  };
-  description: string;
-}
-
 const Layout = () => {
   const { data: session } = useSession();
-  const [selectedAlbum, setSelectedAlbum] = useState<Image[]>([]);
+  const [selectedAlbumThumbnails, setSelectedAlbumThumbnails] = useState<
+    ThumbnailType[]
+  >([]);
   const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
   const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
   useEffect(() => {
@@ -57,14 +47,13 @@ const Layout = () => {
   };
   const getAlbumId = async (id: number) => {
     console.log(id);
-    axios
-      .get(`http://localhost:8080/photos/album/${id}/thumbnails`, {
-        headers: {
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-      })
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error));
+    try {
+      getThumbnailsById(id, session?.user.token).then((res) =>
+        setSelectedAlbumThumbnails(res.data)
+      );
+    } catch (error: any) {
+      message.error("Something went wrong.");
+    }
   };
 
   return (
@@ -76,7 +65,10 @@ const Layout = () => {
         updateTags={updateTags}
         displayedTags={displayedTags}
       />
-      <MainView selectedAlbum={selectedAlbum} displayedTags={displayedTags} />
+      <MainView
+        selectedAlbum={selectedAlbumThumbnails}
+        displayedTags={displayedTags}
+      />
     </Box>
   );
 };
