@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { message, Popconfirm } from "antd";
 
 import AddSubAlbumForm from "./addSubAlbumForm";
+import EditAlbumNameForm from "./editAlbumNameForm";
 
 import { deleteAlbumById, getAllAlbums } from "@/store/requests";
 import { AlbumText, Icon } from "../nav/navigation";
@@ -63,20 +64,30 @@ interface Props {
 
 const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
   const [isAlbumModalActive, setIsAlbumModalActive] = useState<boolean>(false);
+  const [isEditAlbumModalActive, setIsEditAlbumModalActive] =
+    useState<boolean>(false);
+
+  const [clickedAlbumId, setClickedAlbumId] = useState<number | undefined>();
   const [clickedParentId, setClickedParentId] = useState<number>();
   const { data: session } = useSession();
   const renderAlbum = (album: displayedAlbums) => {
     const deleteHandler = async (e: any) => {
       try {
         await deleteAlbumById(album.id, session?.user.token);
-        await getAllAlbums(session?.user.token)
-          .then((res) => updateAlbums(res.data))
-          .catch((error) => console.log(error));
+        await getAllAlbums(session?.user.token).then((res) =>
+          updateAlbums(res.data)
+        );
         message.success("The album was deleted.");
-      } catch (error) {
-        message.error("Something went wrong.");
+      } catch (error: any) {
+        message.error(error.response.data.message ?? "Something went wrong");
       }
     };
+
+    const editAlbumName = (id: number) => {
+      setClickedAlbumId(id);
+      setIsEditAlbumModalActive(true);
+    };
+
     const childAlbums = albums.filter((a) => a?.parent?.id === album.id);
 
     const addAlbumHandler = (parentId: number) => {
@@ -103,7 +114,7 @@ const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
                 alt="Edit icon"
                 width={17}
                 height={17}
-                onClick={() => console.log("Edit")}
+                onClick={() => editAlbumName(album.id)}
               />
               <Popconfirm
                 title="Delete the album"
@@ -155,7 +166,7 @@ const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
               alt="Edit icon"
               width={17}
               height={17}
-              onClick={() => console.log("Edit")}
+              onClick={() => editAlbumName(album.id)}
             />
             <Popconfirm
               title="Delete the album"
@@ -198,6 +209,14 @@ const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
           modalIsActive={isAlbumModalActive}
           parentId={clickedParentId}
           onCancel={() => setIsAlbumModalActive(false)}
+          updateAlbums={updateAlbums}
+        />
+      )}
+      {isEditAlbumModalActive && (
+        <EditAlbumNameForm
+          modalIsActive={isEditAlbumModalActive}
+          albumId={clickedAlbumId}
+          onCancel={() => setIsEditAlbumModalActive(false)}
           updateAlbums={updateAlbums}
         />
       )}

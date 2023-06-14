@@ -10,3 +10,8 @@ export interface ImageType {
   };
   description: string;
 }
+
+export interface ThumbnailType {
+  thumbnailId: number;
+  thumbnailData: string;
+}

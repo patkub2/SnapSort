@@ -55,8 +55,10 @@ const UploadForm: React.FC<Props> = ({
       await getAllTags(session?.user.token).then((res) => updateTags(res.data));
       message.success("Images uploaded successfully");
       onCancel();
-    } catch (error) {
-      message.error("Failed to upload images");
+    } catch (error: any) {
+      message.error(
+        error.response.data.message ?? "Failed to upload the images"
+      );
     }
   };
 

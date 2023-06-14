@@ -8,26 +8,25 @@ import { displayedAlbums } from "@/interfaces/album";
 
 interface Props {
   modalIsActive: boolean;
-  parentId: number | undefined;
+  albumId: number | undefined;
   onCancel: () => void;
   updateAlbums: (albums: displayedAlbums[]) => void;
 }
 
-const AddSubAlbumForm: React.FC<Props> = ({
+const EditAlbumNameForm: React.FC<Props> = ({
   modalIsActive,
+  albumId,
   onCancel,
   updateAlbums,
-  parentId,
 }) => {
   const { data: session } = useSession();
   const onSubmitHandler = async (values: any) => {
     try {
-      await axios.post(
-        "http://localhost:8080/api/albums/create",
-        { name: values.album, parent: { id: parentId } },
+      await axios.put(
+        `http://localhost:8080/api/albums/${albumId}/rename`,
+        { name: values.album },
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${session?.user?.token}`,
           },
         }
@@ -35,6 +34,7 @@ const AddSubAlbumForm: React.FC<Props> = ({
       await getAllAlbums(session?.user.token).then((res) =>
         updateAlbums(res.data)
       );
+      message.success("Album name was edited");
       onCancel();
     } catch (error: any) {
       message.error(error.response.data.message ?? "Something went wrong");
@@ -44,7 +44,7 @@ const AddSubAlbumForm: React.FC<Props> = ({
   return (
     <Modal
       centered
-      title="Add new album"
+      title="Edit album name"
       open={modalIsActive}
       onCancel={onCancel}
       footer={null}
@@ -56,11 +56,11 @@ const AddSubAlbumForm: React.FC<Props> = ({
           <Input placeholder="Album name" />
         </Form.Item>
         <Button type="primary" htmlType="submit" style={{ width: `100%` }}>
-          Add album
+          Ok
         </Button>
       </Form>
     </Modal>
   );
 };
 
-export default AddSubAlbumForm;
+export default EditAlbumNameForm;

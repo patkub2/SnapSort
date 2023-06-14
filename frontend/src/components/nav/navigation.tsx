@@ -10,12 +10,12 @@ import { displayedTags } from "@/interfaces/tag";
 
 const Box = styled.div`
   width: 20%;
-  background-color: #f2f5f8;
-  border-right: solid 0.15rem #e2e9ef;
 `;
 
 const InnerBox = styled.div`
   position: fixed;
+  background-color: #f2f5f8;
+  border-right: solid 0.15rem #e2e9ef;
   top: 0;
   width: inherit;
   display: flex;
