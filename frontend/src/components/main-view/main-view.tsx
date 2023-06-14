@@ -4,12 +4,11 @@ import styled from "styled-components";
 
 import Gallery from "./main-view-gallery";
 
-import { ImageType } from "@/interfaces/image";
+import { ThumbnailType } from "@/interfaces/image";
 import { displayedTags } from "@/interfaces/tag";
 
 const MainBox = styled.div`
   width: 80%;
-  height: 100vh;
 `;
 const Box1 = styled.div`
   display: flex;
@@ -18,7 +17,7 @@ const Box1 = styled.div`
 `;
 
 interface Props {
-  selectedAlbum: ImageType[];
+  selectedAlbum: ThumbnailType[];
   displayedTags: displayedTags[];
 }
 
