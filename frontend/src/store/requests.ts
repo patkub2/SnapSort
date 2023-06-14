@@ -35,3 +35,11 @@ export const uploadMultipleImages = (
     },
   });
 };
+
+export const getThumbnailsById = (id: number, token: string | undefined) => {
+  return axios.get(`http://localhost:8080/photos/album/${id}/thumbnails`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
