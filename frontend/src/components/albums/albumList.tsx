@@ -74,12 +74,12 @@ const AlbumList: React.FC<Props> = ({ albums, getAlbumId, updateAlbums }) => {
     const deleteHandler = async (e: any) => {
       try {
         await deleteAlbumById(album.id, session?.user.token);
-        await getAllAlbums(session?.user.token)
-          .then((res) => updateAlbums(res.data))
-          .catch((error) => console.log(error));
+        await getAllAlbums(session?.user.token).then((res) =>
+          updateAlbums(res.data)
+        );
         message.success("The album was deleted.");
-      } catch (error) {
-        message.error("Something went wrong.");
+      } catch (error: any) {
+        message.error(error.response.data.message);
       }
     };
 
