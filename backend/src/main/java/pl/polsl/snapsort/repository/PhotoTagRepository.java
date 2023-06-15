@@ -20,4 +20,5 @@ public interface PhotoTagRepository extends JpaRepository<PhotoTag, PhotoTagId> 
     List<PhotoTag> findByTagId(Long tagId);
 
 
+    List<PhotoTag> findByPhotoId(Long photoId);
 }
