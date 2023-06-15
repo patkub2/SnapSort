@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef, Fragment } from "react";
+import Image from "next/image";
 import styled from "styled-components";
-import { Image, message } from "antd";
+import { Image as AntImage, message, Popconfirm, Popover, Tooltip } from "antd";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import { ThumbnailType } from "@/interfaces/image";
@@ -12,8 +13,22 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const CustomImage = styled(Image)`
-  border-radius: 5px;
+const Box = styled.div`
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
+    rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+`;
+
+const PopupBox = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const PopupIcon = styled(Image)`
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 interface Props {
@@ -42,21 +57,72 @@ const Gallery: React.FC<Props> = ({ images }) => {
     }
   };
 
+  const deleteImageHandler = (albumId: number) => {
+    console.log(albumId);
+  };
+
+  const editTagsHandler = (imageTags: string[]) => {
+    console.log(imageTags);
+  };
+
+  const content = (albumId: number, imageTags: string[]) => (
+    <PopupBox>
+      <Popconfirm
+        title="Delete the image"
+        description="Are you sure to delete this image?"
+        onConfirm={() => deleteImageHandler(albumId)}
+      >
+        <Fragment>
+          <Tooltip title="Delete image">
+            <PopupIcon
+              src={"/icons/bin.svg"}
+              alt="Delete image icon"
+              width={20}
+              height={20}
+            />
+          </Tooltip>
+        </Fragment>
+      </Popconfirm>
+      <Tooltip title="Edit tags">
+        <Fragment>
+          <PopupIcon
+            onClick={() => editTagsHandler(imageTags)}
+            src={"/icons/edit.svg"}
+            alt="Tag edit icon"
+            width={20}
+            height={20}
+          />
+        </Fragment>
+      </Tooltip>
+    </PopupBox>
+  );
+
   const mappedThumbnails = images.map((image, index) => {
     return (
-      <CustomImage
+      <Popover
+        content={content(image.photoId, image.tags)}
+        placement="top"
         key={index}
-        src={`data:image/jpeg;base64,${image.thumbnailData}`}
-        preview={{ visible: false }}
-        onClick={async () => {
-          const data = await previewImageHandler(image.photoId);
-          if (data) {
-            setPreviewImages([
-              { id: data.photoData.id, data: data.photoData.data },
-            ]);
-          }
-        }}
-      />
+        arrow={false}
+      >
+        <Fragment>
+          <Box>
+            <AntImage
+              style={{ borderRadius: "5px" }}
+              src={`data:image/jpeg;base64,${image.thumbnailData}`}
+              preview={{ visible: false }}
+              onClick={async () => {
+                const data = await previewImageHandler(image.photoId);
+                if (data) {
+                  setPreviewImages([
+                    { id: data.photoData.id, data: data.photoData.data },
+                  ]);
+                }
+              }}
+            />
+          </Box>
+        </Fragment>
+      </Popover>
     );
   });
 
@@ -68,7 +134,7 @@ const Gallery: React.FC<Props> = ({ images }) => {
         <Masonry gutter="1rem">{mappedThumbnails}</Masonry>
       </ResponsiveMasonry>
       {previewImages.length > 0 && (
-        <Image.PreviewGroup
+        <AntImage.PreviewGroup
           preview={{
             visible: !!previewImages.length,
             onVisibleChange: (value) => {
@@ -80,14 +146,14 @@ const Gallery: React.FC<Props> = ({ images }) => {
         >
           {previewImages?.map((image) => {
             return (
-              <Image
+              <AntImage
                 key={image.id}
                 style={{ display: "none" }}
                 src={`data:image/jpeg;base64,${image.data}`}
               />
             );
           })}
-        </Image.PreviewGroup>
+        </AntImage.PreviewGroup>
       )}
     </Container>
   );
