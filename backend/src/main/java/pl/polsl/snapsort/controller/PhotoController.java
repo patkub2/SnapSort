@@ -267,6 +267,46 @@ public class PhotoController {
         photoTagService.addTagToPhoto(photoId, tagId);
     }
 
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity<String> deletePhoto(
+            @RequestHeader(value = "Authorization") String authorizationHeader,
+            @PathVariable Long photoId
+    ) {
+        try {
+            // Extract the token from the Authorization header
+            String token = authorizationHeader.substring("Bearer ".length());
+
+            // Validate the token and extract the user ID
+            Long userId = jwtTokenUtil.extractUserId(token);
+
+            // Check if the photo exists and belongs to the user
+            Photo photo = photoService.getPhotoById(photoId);
+            if (!photo.getUser().getId().equals(userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this photo.");
+            }
+
+            // Delete the associated tags
+            List<PhotoTag> photoTags = photoTagService.getTagsByPhotoId(photoId);
+            for (PhotoTag photoTag : photoTags) {
+                photoTagService.deletePhotoTag(photoTag);
+            }
+
+            // Remove the photo from the associated album
+            AlbumPhoto albumPhoto = albumPhotoService.getAlbumPhotoByPhotoId(photoId);
+            if (albumPhoto != null) {
+                Album album = albumPhoto.getAlbum();
+                albumPhotoService.removePhotoFromAlbum(album, photo);
+            }
+
+            // Delete the photo
+            photoService.deletePhoto(photo);
+
+            return ResponseEntity.ok("Photo deleted successfully.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     private byte[] generateThumbnail(MultipartFile file) throws IOException {
         try (InputStream inputStream = file.getInputStream()) {

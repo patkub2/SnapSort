@@ -90,6 +90,11 @@ public class PhotoTagServiceImpl implements PhotoTagService {
         return tagService.createTag(tag);
     }
 
+    public void deletePhotoTag(PhotoTag photoTag) {
+        photoTagRepository.delete(photoTag);
+    }
+
+
     public List<PhotoTag> getTagsByPhotoId(Long photoId) {
         return photoTagRepository.findByPhotoId(photoId);
     }

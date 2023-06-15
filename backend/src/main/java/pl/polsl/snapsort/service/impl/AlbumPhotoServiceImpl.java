@@ -30,4 +30,15 @@ public class AlbumPhotoServiceImpl implements AlbumPhotoService {
                 .build();
         albumPhotoRepository.save(albumPhoto);
     }
+
+    public AlbumPhoto getAlbumPhotoByPhotoId(Long photoId) {
+        return albumPhotoRepository.findByPhotoId(photoId);
+    }
+
+    public void removePhotoFromAlbum(Album album, Photo photo) {
+        AlbumPhoto albumPhoto = albumPhotoRepository.findByAlbumAndPhoto(album, photo);
+        if (albumPhoto != null) {
+            albumPhotoRepository.delete(albumPhoto);
+        }
+    }
 }
