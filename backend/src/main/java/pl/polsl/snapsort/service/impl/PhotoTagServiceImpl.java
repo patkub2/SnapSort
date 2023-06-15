@@ -62,7 +62,7 @@ public class PhotoTagServiceImpl implements PhotoTagService {
         Photo photo = photoRepository.findById(photoId)
                 .orElseThrow(() -> new PhotoNotFoundException("Photo not found."));
 
-        Tag tag = tagRepository.findByName(tagName)
+        Tag tag = tagRepository.findByUserIdAndName(userId, tagName)
                 .orElseGet(() -> createTag(tagName,userId));
 
         PhotoTagId photoTagId = new PhotoTagId(photoId, tag.getId());
