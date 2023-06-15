@@ -202,7 +202,14 @@ public class PhotoController {
         for (Photo photo : photos) {
             ThumbnailData thumbnailData = photo.getThumbnailData();
             if (thumbnailData != null) {
-                ThumbnailResponse thumbnailResponse = new ThumbnailResponse(photo.getId(), thumbnailData.getData());
+                // Get the tags connected to the photo
+                List<PhotoTag> photoTags = photoTagService.getTagsByPhotoId(photo.getId());
+                List<String> tags = new ArrayList<>();
+                for (PhotoTag photoTag : photoTags) {
+                    tags.add(photoTag.getTag().getName());
+                }
+
+                ThumbnailResponse thumbnailResponse = new ThumbnailResponse(photo.getId(), thumbnailData.getData(), tags);
                 thumbnails.add(thumbnailResponse);
             }
         }
@@ -219,7 +226,14 @@ public class PhotoController {
         for (Photo photo : photos) {
             ThumbnailData thumbnailData = photo.getThumbnailData();
             if (thumbnailData != null) {
-                ThumbnailResponse thumbnailResponse = new ThumbnailResponse(photo.getId(), thumbnailData.getData());
+                // Get the tags connected to the photo
+                List<PhotoTag> photoTags = photoTagService.getTagsByPhotoId(photo.getId());
+                List<String> tags = new ArrayList<>();
+                for (PhotoTag photoTag : photoTags) {
+                    tags.add(photoTag.getTag().getName());
+                }
+
+                ThumbnailResponse thumbnailResponse = new ThumbnailResponse(photo.getId(), thumbnailData.getData(), tags);
                 thumbnails.add(thumbnailResponse);
             }
         }

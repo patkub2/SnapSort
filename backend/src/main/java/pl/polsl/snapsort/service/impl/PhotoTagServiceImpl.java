@@ -13,6 +13,7 @@ import pl.polsl.snapsort.service.TagService;
 import pl.polsl.snapsort.service.UserService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class PhotoTagServiceImpl implements PhotoTagService {
@@ -89,6 +90,8 @@ public class PhotoTagServiceImpl implements PhotoTagService {
         return tagService.createTag(tag);
     }
 
-
+    public List<PhotoTag> getTagsByPhotoId(Long photoId) {
+        return photoTagRepository.findByPhotoId(photoId);
+    }
 
 }
