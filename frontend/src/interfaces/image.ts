@@ -14,4 +14,5 @@ export interface ImageType {
 export interface ThumbnailType {
   photoId: number;
   thumbnailData: string;
+  tags: string[];
 }

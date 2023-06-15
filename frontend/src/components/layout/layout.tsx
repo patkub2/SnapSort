@@ -47,9 +47,9 @@ const Layout = () => {
   };
   const getAlbumId = async (id: number) => {
     try {
-      getThumbnailsById(id, session?.user.token).then((res) =>
-        setSelectedAlbumThumbnails(res.data)
-      );
+      getThumbnailsById(id, session?.user.token).then((res) => {
+        setSelectedAlbumThumbnails(res.data);
+      });
     } catch (error: any) {
       message.error("Something went wrong.");
     }
