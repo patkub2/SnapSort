@@ -9,6 +9,7 @@ import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
 
 const Box = styled.div`
+  height: 100vh;
   @media (min-width: 1201px) {
     width: 15rem;
   }
