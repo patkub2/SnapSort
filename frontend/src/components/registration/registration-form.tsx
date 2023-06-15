@@ -1,4 +1,5 @@
 import React, { FC, ReactElement, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
@@ -6,8 +7,8 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
 import axios from "axios";
+
 import RegisterLoginPopup from "../UI/register-login-popup";
-import { useRouter } from "next/router";
 
 YupPassword(Yup);
 
@@ -86,10 +87,10 @@ const RegisterSchema = Yup.object().shape({
     .required("Required"),
   password: Yup.string()
     .min(3, "Must be at least 3 charakters long.")
-    // .minLowercase(1, "Must contain at least one lowercase charakter.")
-    // .minUppercase(1, "Must contain at least one uppercase charakter.")
-    // .minNumbers(1, "Must contain at least one number.")
-    // .minSymbols(1, "Must contain at least special charakter.")
+    .minLowercase(1, "Must contain at least one lowercase charakter.")
+    .minUppercase(1, "Must contain at least one uppercase charakter.")
+    .minNumbers(1, "Must contain at least one number.")
+    .minSymbols(1, "Must contain at least special charakter.")
     .required("Required"),
   passwordConfirmation: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")

@@ -24,15 +24,15 @@ YupPassword(Yup);
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string()
-    // .email("Invalid email")
-    // .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
+    .email("Invalid email")
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
     .required("Required"),
   password: Yup.string()
     .min(3, "Must be at least 8 charakters long.")
-    // .minLowercase(1, "Must contain at least one lowercase charakter.")
-    // .minUppercase(1, "Must contain at least one uppercase charakter.")
-    // .minNumbers(1, "Must contain at least one number.")
-    // .minSymbols(1, "Must contain at least special charakter.")
+    .minLowercase(1, "Must contain at least one lowercase charakter.")
+    .minUppercase(1, "Must contain at least one uppercase charakter.")
+    .minNumbers(1, "Must contain at least one number.")
+    .minSymbols(1, "Must contain at least special charakter.")
     .required("Required"),
 });
 
