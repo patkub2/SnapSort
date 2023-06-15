@@ -14,7 +14,7 @@ const MainBox = styled.div`
 const Box1 = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0.8rem 1.6rem;
+  padding: 2rem 1.6rem;
 `;
 
 interface Props {
