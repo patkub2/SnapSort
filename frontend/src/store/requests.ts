@@ -36,7 +36,10 @@ export const uploadMultipleImages = (
   });
 };
 
-export const getThumbnailsById = (id: number, token: string | undefined) => {
+export const getThumbnailsById = (
+  id: number | undefined,
+  token: string | undefined
+) => {
   return axios.get(`http://localhost:8080/photos/album/${id}/thumbnails`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -46,6 +49,14 @@ export const getThumbnailsById = (id: number, token: string | undefined) => {
 
 export const getPhotoById = (id: number, token: string | undefined) => {
   return axios.get(`http://localhost:8080/photos/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deletePhotoById = (id: number, token: string | undefined) => {
+  return axios.delete(`http://localhost:8080/photos/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
