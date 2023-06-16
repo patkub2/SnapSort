@@ -62,3 +62,15 @@ export const deletePhotoById = (id: number, token: string | undefined) => {
     },
   });
 };
+
+export const changePhotoTagsById = (
+  id: number | undefined,
+  token: string | undefined,
+  newTags: string[]
+) => {
+  return axios.post(`http://localhost:8080/photos/${id}/tags`, newTags, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
