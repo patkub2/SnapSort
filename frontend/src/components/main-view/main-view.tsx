@@ -22,6 +22,7 @@ interface Props {
   displayedTags: displayedTags[];
   selectedAlbumId: number | undefined;
   isLoading: boolean;
+  updateTags: (tags: displayedTags[]) => void;
   updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
@@ -31,6 +32,7 @@ const MainView: React.FC<Props> = ({
   updateThumbnails,
   selectedAlbumId,
   isLoading,
+  updateTags,
 }) => {
   const mappedTagSearchOptions = displayedTags.map((tag) => ({
     value: tag.name,
@@ -81,6 +83,7 @@ const MainView: React.FC<Props> = ({
         selectedAlbumId={selectedAlbumId}
         isLoading={isLoading}
         displayedTags={displayedTags}
+        updateTags={updateTags}
       />
     </MainBox>
   );

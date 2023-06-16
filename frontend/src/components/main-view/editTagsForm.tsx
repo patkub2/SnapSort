@@ -3,7 +3,11 @@ import { useSession } from "next-auth/react";
 import { Modal, Button, Form, message, Select } from "antd";
 
 import { displayedTags } from "@/interfaces/tag";
-import { changePhotoTagsById, getThumbnailsById } from "@/store/requests";
+import {
+  changePhotoTagsById,
+  getAllTags,
+  getThumbnailsById,
+} from "@/store/requests";
 import { ThumbnailType } from "@/interfaces/image";
 
 interface Props {
@@ -12,6 +16,7 @@ interface Props {
   photoTags: string[];
   selectedAlbumId: number | undefined;
   displayedTags: displayedTags[];
+  updateTags: (tags: displayedTags[]) => void;
   updateThumbnails: (thumbnails: ThumbnailType[]) => void;
   onCancel: () => void;
 }
@@ -24,6 +29,7 @@ const EditTagsForm: React.FC<Props> = ({
   updateThumbnails,
   displayedTags,
   selectedAlbumId,
+  updateTags,
 }) => {
   const { data: session } = useSession();
 
@@ -38,6 +44,7 @@ const EditTagsForm: React.FC<Props> = ({
       await getThumbnailsById(selectedAlbumId, session?.user.token).then(
         (res) => updateThumbnails(res.data)
       );
+      await getAllTags(session?.user.token).then((res) => updateTags(res.data));
       message.success("Tags were edited");
       onCancel();
     } catch (error: any) {
@@ -58,7 +65,7 @@ const EditTagsForm: React.FC<Props> = ({
       <Form onFinish={onSubmitHandler}>
         <Form.Item name="album" initialValue={photoTags}>
           <Select
-            mode="multiple"
+            mode="tags"
             placeholder="Album name"
             options={mappedTagOptions}
           />

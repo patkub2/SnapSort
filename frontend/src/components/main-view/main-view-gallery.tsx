@@ -56,6 +56,7 @@ interface Props {
   selectedAlbumId: number | undefined;
   isLoading: boolean;
   displayedTags: displayedTags[];
+  updateTags: (tags: displayedTags[]) => void;
   updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
@@ -65,6 +66,7 @@ const Gallery: React.FC<Props> = ({
   isLoading,
   selectedAlbumId,
   displayedTags,
+  updateTags,
 }) => {
   const [isEditVisible, setIsEditVisible] = useState<boolean>(false);
   const [clickedPhotoTags, setClickedPhotoTags] = useState<string[]>([]);
@@ -219,6 +221,7 @@ const Gallery: React.FC<Props> = ({
           updateThumbnails={updateThumbnails}
           modalIsActive={isEditVisible}
           displayedTags={displayedTags}
+          updateTags={updateTags}
           onCancel={() => setIsEditVisible(false)}
         />
       )}
