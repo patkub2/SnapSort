@@ -19,6 +19,7 @@ import {
   LoginLink,
   ErrorMessage,
 } from "../registration/registration-form";
+import { message } from "antd";
 
 YupPassword(Yup);
 
@@ -29,17 +30,14 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
   password: Yup.string()
     .min(3, "Must be at least 8 charakters long.")
-    .minLowercase(1, "Must contain at least one lowercase charakter.")
-    .minUppercase(1, "Must contain at least one uppercase charakter.")
-    .minNumbers(1, "Must contain at least one number.")
-    .minSymbols(1, "Must contain at least special charakter.")
+    // .minLowercase(1, "Must contain at least one lowercase charakter.")
+    // .minUppercase(1, "Must contain at least one uppercase charakter.")
     .required("Required"),
 });
 
 const LoginForm = ({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>): ReactElement => {
-  const [Error, setError] = useState("");
   const router = useRouter();
   const callbackUrl = (router.query?.callbackUrl as string) ?? "/";
   const submitHandler = async (values: {
@@ -52,11 +50,11 @@ const LoginForm = ({
       redirect: false,
     });
     if (result?.error) {
-      setError(result.error);
+      message.error("Wrong email or password");
     } else {
+      message.success("Logging in");
       router.push(callbackUrl);
     }
-    console.log(result);
   };
 
   return (

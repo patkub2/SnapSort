@@ -7,8 +7,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import YupPassword from "yup-password";
 import axios from "axios";
-
-import RegisterLoginPopup from "../UI/register-login-popup";
+import { message } from "antd";
 
 YupPassword(Yup);
 
@@ -86,11 +85,9 @@ const RegisterSchema = Yup.object().shape({
     .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i, "Invalid email format.")
     .required("Required"),
   password: Yup.string()
-    .min(3, "Must be at least 3 charakters long.")
+    .min(8, "Must be at least 8 charakters long.")
     .minLowercase(1, "Must contain at least one lowercase charakter.")
     .minUppercase(1, "Must contain at least one uppercase charakter.")
-    .minNumbers(1, "Must contain at least one number.")
-    .minSymbols(1, "Must contain at least special charakter.")
     .required("Required"),
   passwordConfirmation: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
@@ -101,34 +98,23 @@ type ChildProps = {};
 
 const RegistrationForm: FC<ChildProps> = (): ReactElement => {
   const router = useRouter();
-  const [isPopupActive, setIsPopupActive] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [popupOptions, setPopupOptions] = useState({
-    status: "",
-    message: "",
-  });
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
-    if (isPopupActive === true) {
+    if (isSuccess) {
       timer = setTimeout(() => {
-        setIsPopupActive(false);
-        if (!isError) {
-          router.push("/login");
-        }
-      }, 5000);
+        setIsSuccess(false);
+        router.push("/login");
+      }, 3000);
     }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [isPopupActive, router, isError]);
+  }, [isSuccess, router]);
 
-  const onClose = () => {
-    setIsPopupActive(false);
-  };
-
-  const submitHandler = (
+  const submitHandler = async (
     values: {
       username: string;
       email: string;
@@ -142,38 +128,21 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
       password: values.password,
       email: values.email,
     };
-    axios
-      .post("http://localhost:8080/api/users/register", newUser, {
+    try {
+      await axios.post("http://localhost:8080/api/users/register", newUser, {
         headers: {
           "Content-Type": "application/json",
         },
-      })
-      .then((res) => {
-        if (res.status === 201 && res) {
-          setPopupOptions({
-            status: "success",
-            message: "Your account has been created.",
-          });
-          setIsPopupActive(true);
-          setIsError(false);
-          actions.resetForm();
-        }
-      })
-      .catch((error) => {
-        setIsError(true);
-        setPopupOptions({
-          status: "error",
-          message: error.response.data,
-        });
-        setIsPopupActive(true);
       });
+      message.success("Your account has been created");
+      setIsSuccess(true);
+    } catch (error: any) {
+      message.error(error.response.data.message ?? "Something went wrong");
+    }
   };
 
   return (
     <Box>
-      {isPopupActive && (
-        <RegisterLoginPopup options={popupOptions} onClose={onClose} />
-      )}
       <LogoImage
         src="icons/logo.svg"
         alt="Logo of the page"
@@ -217,7 +186,9 @@ const RegistrationForm: FC<ChildProps> = (): ReactElement => {
             {errors.passwordConfirmation && touched.passwordConfirmation && (
               <ErrorMessage>{errors.passwordConfirmation}</ErrorMessage>
             )}
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" disabled={isSuccess}>
+              Sign Up
+            </Button>
           </StyledForm>
         )}
       </Formik>

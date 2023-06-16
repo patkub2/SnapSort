@@ -7,6 +7,7 @@ import AlbumList from "../albums/albumList";
 import AddAlbumForm from "../albums/addAlbumForm";
 import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
+import { ThumbnailType } from "@/interfaces/image";
 
 const Box = styled.div`
   height: 100vh;
@@ -94,6 +95,7 @@ export const AlbumText = styled.p`
 `;
 
 const Albums = styled.div`
+  min-height: 10rem;
   overflow-y: auto;
 
   &::-webkit-scrollbar-track {
@@ -147,6 +149,7 @@ const FooterOption = styled.div`
 interface Props {
   displayedAlbums: displayedAlbums[];
   displayedTags: displayedTags[];
+  updateThumbnails: (thumbnails: ThumbnailType[]) => void;
   updateTags: (tag: displayedTags[]) => void;
   getAlbumId: (id: number) => void;
   updateAlbums: (albums: displayedAlbums[]) => void;
@@ -158,6 +161,7 @@ const Navigation: React.FC<Props> = ({
   displayedAlbums,
   updateTags,
   displayedTags,
+  updateThumbnails,
 }) => {
   const [isUploadModalActive, setIsUploadModalActive] =
     useState<boolean>(false);
@@ -188,7 +192,7 @@ const Navigation: React.FC<Props> = ({
           />
           <LogoText>SnapSort</LogoText>
         </Logo>
-        <AddAlbum onClick={addAlbumHandler}>
+        <AddAlbum onClick={addAlbumHandler} id={"addAlbum"}>
           <Icon
             src="icons/cross.svg"
             alt="Cross icon"
@@ -204,7 +208,7 @@ const Navigation: React.FC<Props> = ({
             updateAlbums={updateAlbums}
           />
         )}
-        <Albums>
+        <Albums id="allAlbums">
           {displayedAlbums.length > 0 ? (
             <AlbumList
               albums={displayedAlbums}
@@ -245,7 +249,7 @@ const Navigation: React.FC<Props> = ({
             />
             <AlbumText>Profile</AlbumText>
           </FooterOption>
-          <FooterOption onClick={uploadHandler}>
+          <FooterOption onClick={uploadHandler} id={"uploadImages"}>
             <Icon
               src="icons/upload.svg"
               alt="Upload images icon"
@@ -254,7 +258,7 @@ const Navigation: React.FC<Props> = ({
             />
             <AlbumText>Upload</AlbumText>
           </FooterOption>
-          <FooterOption onClick={logoutHandler}>
+          <FooterOption onClick={logoutHandler} id={"logout"}>
             <Icon
               src="icons/logout.svg"
               alt="Dark mode icon"
@@ -275,6 +279,7 @@ const Navigation: React.FC<Props> = ({
           }))}
           updateTags={updateTags}
           allTags={displayedTags.map((tag) => tag.name)}
+          updateThumbnails={updateThumbnails}
         />
       )}
     </Box>

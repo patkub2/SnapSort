@@ -10,6 +10,7 @@ import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
 import { message } from "antd";
 import { ThumbnailType } from "@/interfaces/image";
+import Onboarding from "../onboarding/onboarding";
 
 const Box = styled.div`
   display: flex;
@@ -22,17 +23,22 @@ const Layout = () => {
   >([]);
   const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
   const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<number | undefined>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     const fetchData = async () => {
       const session = await getSession();
       if (session) {
-        getAllAlbums(session.user.token)
-          .then((res) => setDisplayedAlbums(res.data))
-          .catch((error) => console.log(error));
-
-        getAllTags(session.user.token)
-          .then((res) => setDisplayedTags(res.data))
-          .catch((error) => console.log(error));
+        try {
+          getAllAlbums(session.user.token).then((res) =>
+            setDisplayedAlbums(res.data)
+          );
+          getAllTags(session.user.token).then((res) =>
+            setDisplayedTags(res.data)
+          );
+        } catch (error: any) {
+          message.error(error.response.data.message ?? "Something went wrong");
+        }
       }
     };
     fetchData();
@@ -45,10 +51,18 @@ const Layout = () => {
   const updateTags = (tags: displayedTags[]) => {
     setDisplayedTags(tags);
   };
+
+  const updateThumbnails = (thumbnails: ThumbnailType[]) => {
+    setSelectedAlbumThumbnails(thumbnails);
+  };
+
   const getAlbumId = async (id: number) => {
+    setSelectedAlbumId(id);
     try {
+      setIsLoading(true);
       getThumbnailsById(id, session?.user.token).then((res) => {
         setSelectedAlbumThumbnails(res.data);
+        setIsLoading(false);
       });
     } catch (error: any) {
       message.error("Something went wrong.");
@@ -57,16 +71,22 @@ const Layout = () => {
 
   return (
     <Box>
+      <Onboarding />
       <Navigation
         getAlbumId={getAlbumId}
         updateAlbums={updateAlbums}
         displayedAlbums={displayedAlbums}
         updateTags={updateTags}
         displayedTags={displayedTags}
+        updateThumbnails={updateThumbnails}
       />
       <MainView
         selectedAlbum={selectedAlbumThumbnails}
         displayedTags={displayedTags}
+        updateThumbnails={updateThumbnails}
+        selectedAlbumId={selectedAlbumId}
+        isLoading={isLoading}
+        updateTags={updateTags}
       />
     </Box>
   );

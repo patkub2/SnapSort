@@ -14,15 +14,26 @@ const MainBox = styled.div`
 const Box1 = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0.8rem 1.6rem;
+  margin: 2rem 1.6rem;
 `;
 
 interface Props {
   selectedAlbum: ThumbnailType[];
   displayedTags: displayedTags[];
+  selectedAlbumId: number | undefined;
+  isLoading: boolean;
+  updateTags: (tags: displayedTags[]) => void;
+  updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
-const MainView: React.FC<Props> = ({ selectedAlbum, displayedTags }) => {
+const MainView: React.FC<Props> = ({
+  selectedAlbum,
+  displayedTags,
+  updateThumbnails,
+  selectedAlbumId,
+  isLoading,
+  updateTags,
+}) => {
   const mappedTagSearchOptions = displayedTags.map((tag) => ({
     value: tag.name,
   }));
@@ -55,7 +66,7 @@ const MainView: React.FC<Props> = ({ selectedAlbum, displayedTags }) => {
 
   return (
     <MainBox>
-      <Box1>
+      <Box1 id="searchBar">
         <Select
           mode="multiple"
           options={mappedTagSearchOptions}
@@ -66,7 +77,14 @@ const MainView: React.FC<Props> = ({ selectedAlbum, displayedTags }) => {
           onClear={() => setSelectedTags([])}
         />
       </Box1>
-      <Gallery images={selectedAlbum?.filter(applyFiltersTags)} />
+      <Gallery
+        images={selectedAlbum?.filter(applyFiltersTags)}
+        updateThumbnails={updateThumbnails}
+        selectedAlbumId={selectedAlbumId}
+        isLoading={isLoading}
+        displayedTags={displayedTags}
+        updateTags={updateTags}
+      />
     </MainBox>
   );
 };
