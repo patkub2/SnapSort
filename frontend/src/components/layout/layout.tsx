@@ -10,6 +10,7 @@ import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
 import { message } from "antd";
 import { ThumbnailType } from "@/interfaces/image";
+import Onboarding from "../onboarding/onboarding";
 
 const Box = styled.div`
   display: flex;
@@ -28,13 +29,16 @@ const Layout = () => {
     const fetchData = async () => {
       const session = await getSession();
       if (session) {
-        getAllAlbums(session.user.token)
-          .then((res) => setDisplayedAlbums(res.data))
-          .catch((error) => console.log(error));
-
-        getAllTags(session.user.token)
-          .then((res) => setDisplayedTags(res.data))
-          .catch((error) => console.log(error));
+        try {
+          getAllAlbums(session.user.token).then((res) =>
+            setDisplayedAlbums(res.data)
+          );
+          getAllTags(session.user.token).then((res) =>
+            setDisplayedTags(res.data)
+          );
+        } catch (error: any) {
+          message.error(error.response.data.message ?? "Something went wrong");
+        }
       }
     };
     fetchData();
@@ -67,6 +71,7 @@ const Layout = () => {
 
   return (
     <Box>
+      <Onboarding />
       <Navigation
         getAlbumId={getAlbumId}
         updateAlbums={updateAlbums}
@@ -81,6 +86,7 @@ const Layout = () => {
         updateThumbnails={updateThumbnails}
         selectedAlbumId={selectedAlbumId}
         isLoading={isLoading}
+        updateTags={updateTags}
       />
     </Box>
   );
