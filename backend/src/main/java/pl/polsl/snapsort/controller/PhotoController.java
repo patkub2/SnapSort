@@ -44,10 +44,12 @@ public class PhotoController {
     private final AlbumPhotoService albumPhotoService;
     private final JwtTokenUtil jwtTokenUtil;
 
+    private final TagService tagService;
+
     public PhotoController(PhotoService photoService, PhotoDataService photoDataService,
                            ThumbnailDataService thumbnailDataService, UserService userService,
                            PhotoTagService photoTagService, AlbumService albumService,
-                           AlbumPhotoService albumPhotoService, JwtTokenUtil jwtTokenUtil) {
+                           AlbumPhotoService albumPhotoService, JwtTokenUtil jwtTokenUtil, TagService tagService) {
         this.photoService = photoService;
         this.photoDataService = photoDataService;
         this.thumbnailDataService = thumbnailDataService;
@@ -56,6 +58,7 @@ public class PhotoController {
         this.albumService = albumService;
         this.albumPhotoService = albumPhotoService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.tagService = tagService;
     }
 
     @PostMapping("/upload/multiple")
@@ -307,6 +310,41 @@ public class PhotoController {
         }
     }
 
+    @PostMapping("/{photoId}/tags")
+    public ResponseEntity<String> addTagsToPhoto(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long photoId,
+            @RequestBody List<String> tags
+    ) {
+        try {
+            // Extract the user ID from the token
+            Long userId = jwtTokenUtil.extractUserId(token.replace("Bearer ", ""));
+
+            // Check if the photo exists and belongs to the user
+            Photo photo = photoService.getPhotoById(photoId);
+            if (!photo.getUser().getId().equals(userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to add tags to this photo.");
+            }
+            // Delete the associated tags
+            List<PhotoTag> photoTags = photoTagService.getTagsByPhotoId(photoId);
+            for (PhotoTag photoTag : photoTags) {
+                photoTagService.deletePhotoTag(photoTag);
+            }
+
+                // If tags are provided, add them to the photo
+                if (tags != null && !tags.isEmpty()) {
+                    for (String tagName : tags) {
+                        photoTagService.addTagToPhoto(photo.getId(), tagName, userId);
+                    }
+
+
+            }
+
+            return ResponseEntity.ok("Tags added successfully.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     private byte[] generateThumbnail(MultipartFile file) throws IOException {
         try (InputStream inputStream = file.getInputStream()) {
