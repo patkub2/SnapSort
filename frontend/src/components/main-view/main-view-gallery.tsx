@@ -1,12 +1,17 @@
-import React, { useEffect, useState, forwardRef, Fragment } from "react";
+import React, { useEffect, useState, Fragment } from "react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
 import { Image as AntImage, message, Popconfirm, Popover, Tooltip } from "antd";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import { ThumbnailType } from "@/interfaces/image";
-import { getPhotoById } from "@/store/requests";
-import { useSession } from "next-auth/react";
+import {
+  deletePhotoById,
+  getPhotoById,
+  getThumbnailsById,
+} from "@/store/requests";
+import { displayedTags } from "@/interfaces/tag";
 
 const Container = styled.div`
   margin: 1rem 2rem;
@@ -33,9 +38,15 @@ const PopupIcon = styled(Image)`
 
 interface Props {
   images: ThumbnailType[];
+  selectedAlbumId: number | undefined;
+  updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
-const Gallery: React.FC<Props> = ({ images }) => {
+const Gallery: React.FC<Props> = ({
+  images,
+  updateThumbnails,
+  selectedAlbumId,
+}) => {
   const [previewImages, setPreviewImages] = useState<
     {
       id: number;
@@ -57,8 +68,16 @@ const Gallery: React.FC<Props> = ({ images }) => {
     }
   };
 
-  const deleteImageHandler = (albumId: number) => {
-    console.log(albumId);
+  const deleteImageHandler = async (photoId: number) => {
+    try {
+      await deletePhotoById(photoId, session?.user.token);
+      message.success("Photo was deleted");
+      await getThumbnailsById(selectedAlbumId, session?.user.token).then(
+        (res) => updateThumbnails(res.data)
+      );
+    } catch (error: any) {
+      message.error(error.response.data.message ?? "Something went wrong");
+    }
   };
 
   const editTagsHandler = (imageTags: string[]) => {

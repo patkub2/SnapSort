@@ -22,6 +22,7 @@ const Layout = () => {
   >([]);
   const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
   const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<number | undefined>();
   useEffect(() => {
     const fetchData = async () => {
       const session = await getSession();
@@ -45,7 +46,13 @@ const Layout = () => {
   const updateTags = (tags: displayedTags[]) => {
     setDisplayedTags(tags);
   };
+
+  const updateThumbnails = (thumbnails: ThumbnailType[]) => {
+    setSelectedAlbumThumbnails(thumbnails);
+  };
+
   const getAlbumId = async (id: number) => {
+    setSelectedAlbumId(id);
     try {
       getThumbnailsById(id, session?.user.token).then((res) => {
         setSelectedAlbumThumbnails(res.data);
@@ -67,6 +74,8 @@ const Layout = () => {
       <MainView
         selectedAlbum={selectedAlbumThumbnails}
         displayedTags={displayedTags}
+        updateThumbnails={updateThumbnails}
+        selectedAlbumId={selectedAlbumId}
       />
     </Box>
   );

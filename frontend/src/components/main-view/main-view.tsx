@@ -20,9 +20,16 @@ const Box1 = styled.div`
 interface Props {
   selectedAlbum: ThumbnailType[];
   displayedTags: displayedTags[];
+  selectedAlbumId: number | undefined;
+  updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
-const MainView: React.FC<Props> = ({ selectedAlbum, displayedTags }) => {
+const MainView: React.FC<Props> = ({
+  selectedAlbum,
+  displayedTags,
+  updateThumbnails,
+  selectedAlbumId,
+}) => {
   const mappedTagSearchOptions = displayedTags.map((tag) => ({
     value: tag.name,
   }));
@@ -66,7 +73,11 @@ const MainView: React.FC<Props> = ({ selectedAlbum, displayedTags }) => {
           onClear={() => setSelectedTags([])}
         />
       </Box1>
-      <Gallery images={selectedAlbum?.filter(applyFiltersTags)} />
+      <Gallery
+        images={selectedAlbum?.filter(applyFiltersTags)}
+        updateThumbnails={updateThumbnails}
+        selectedAlbumId={selectedAlbumId}
+      />
     </MainBox>
   );
 };
