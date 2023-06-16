@@ -12,12 +12,14 @@ import {
 } from "antd";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
+import EditTagsForm from "./editTagsForm";
 import { ThumbnailType } from "@/interfaces/image";
 import {
   deletePhotoById,
   getPhotoById,
   getThumbnailsById,
 } from "@/store/requests";
+import { displayedTags } from "@/interfaces/tag";
 
 const Container = styled.div`
   margin: 1rem 2rem;
@@ -53,6 +55,7 @@ interface Props {
   images: ThumbnailType[];
   selectedAlbumId: number | undefined;
   isLoading: boolean;
+  displayedTags: displayedTags[];
   updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
@@ -61,7 +64,11 @@ const Gallery: React.FC<Props> = ({
   updateThumbnails,
   isLoading,
   selectedAlbumId,
+  displayedTags,
 }) => {
+  const [isEditVisible, setIsEditVisible] = useState<boolean>(false);
+  const [clickedPhotoTags, setClickedPhotoTags] = useState<string[]>([]);
+  const [clickedPhotoId, setClickedPhotoId] = useState<number | undefined>();
   const [previewImages, setPreviewImages] = useState<
     {
       id: number;
@@ -93,16 +100,18 @@ const Gallery: React.FC<Props> = ({
     }
   };
 
-  const editTagsHandler = (imageTags: string[]) => {
-    console.log(imageTags);
+  const editTagsHandler = (imageTags: string[], photoId: number) => {
+    setClickedPhotoTags(imageTags);
+    setClickedPhotoId(photoId);
+    setIsEditVisible(true);
   };
 
-  const content = (albumId: number, imageTags: string[]) => (
+  const content = (photoId: number, imageTags: string[]) => (
     <PopupBox>
       <Popconfirm
         title="Delete the image"
         description="Are you sure to delete this image?"
-        onConfirm={() => deleteImageHandler(albumId)}
+        onConfirm={() => deleteImageHandler(photoId)}
       >
         <Fragment>
           <Tooltip title="Delete image">
@@ -118,7 +127,7 @@ const Gallery: React.FC<Props> = ({
       <Tooltip title="Edit tags">
         <Fragment>
           <PopupIcon
-            onClick={() => editTagsHandler(imageTags)}
+            onClick={() => editTagsHandler(imageTags, photoId)}
             src={"/icons/edit.svg"}
             alt="Tag edit icon"
             width={20}
@@ -201,6 +210,17 @@ const Gallery: React.FC<Props> = ({
         <CenterBox>
           <Spin />
         </CenterBox>
+      )}
+      {isEditVisible && (
+        <EditTagsForm
+          selectedAlbumId={selectedAlbumId}
+          photoTags={clickedPhotoTags}
+          photoId={clickedPhotoId}
+          updateThumbnails={updateThumbnails}
+          modalIsActive={isEditVisible}
+          displayedTags={displayedTags}
+          onCancel={() => setIsEditVisible(false)}
+        />
       )}
     </Fragment>
   );

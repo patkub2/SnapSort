@@ -80,6 +80,7 @@ const MainView: React.FC<Props> = ({
         updateThumbnails={updateThumbnails}
         selectedAlbumId={selectedAlbumId}
         isLoading={isLoading}
+        displayedTags={displayedTags}
       />
     </MainBox>
   );
