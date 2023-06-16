@@ -71,7 +71,6 @@ const UploadForm: React.FC<Props> = ({
       );
     }
   };
-  // values.album - albumid
 
   return (
     <Modal
