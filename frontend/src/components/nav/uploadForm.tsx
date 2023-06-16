@@ -3,8 +3,13 @@ import { useSession } from "next-auth/react";
 import { Modal, Upload, Button, Form, Select, message } from "antd";
 import styled from "styled-components";
 
-import { getAllTags, uploadMultipleImages } from "@/store/requests";
+import {
+  getAllTags,
+  getThumbnailsById,
+  uploadMultipleImages,
+} from "@/store/requests";
 import { displayedTags } from "@/interfaces/tag";
+import { ThumbnailType } from "@/interfaces/image";
 
 const Container = styled.div`
   display: flex;
@@ -21,6 +26,7 @@ interface Props {
   modalIsActive: boolean;
   allAlbums: { name: string; id: number }[];
   allTags: string[];
+  updateThumbnails: (thumbnails: ThumbnailType[]) => void;
   onCancel: () => void;
   updateTags: (tag: displayedTags[]) => void;
 }
@@ -31,6 +37,7 @@ const UploadForm: React.FC<Props> = ({
   allAlbums,
   updateTags,
   allTags,
+  updateThumbnails,
 }) => {
   const { data: session } = useSession();
   const albumOptions = allAlbums?.map((album) => ({
@@ -54,6 +61,9 @@ const UploadForm: React.FC<Props> = ({
       await uploadMultipleImages(formData, session?.user.token);
       await getAllTags(session?.user.token).then((res) => updateTags(res.data));
       message.success("Images uploaded successfully");
+      await getThumbnailsById(values.album, session?.user.token).then((res) =>
+        updateThumbnails(res.data)
+      );
       onCancel();
     } catch (error: any) {
       message.error(
@@ -61,6 +71,7 @@ const UploadForm: React.FC<Props> = ({
       );
     }
   };
+  // values.album - albumid
 
   return (
     <Modal

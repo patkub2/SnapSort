@@ -70,6 +70,7 @@ const Layout = () => {
         displayedAlbums={displayedAlbums}
         updateTags={updateTags}
         displayedTags={displayedTags}
+        updateThumbnails={updateThumbnails}
       />
       <MainView
         selectedAlbum={selectedAlbumThumbnails}

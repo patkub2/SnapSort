@@ -7,6 +7,7 @@ import AlbumList from "../albums/albumList";
 import AddAlbumForm from "../albums/addAlbumForm";
 import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
+import { ThumbnailType } from "@/interfaces/image";
 
 const Box = styled.div`
   height: 100vh;
@@ -147,6 +148,7 @@ const FooterOption = styled.div`
 interface Props {
   displayedAlbums: displayedAlbums[];
   displayedTags: displayedTags[];
+  updateThumbnails: (thumbnails: ThumbnailType[]) => void;
   updateTags: (tag: displayedTags[]) => void;
   getAlbumId: (id: number) => void;
   updateAlbums: (albums: displayedAlbums[]) => void;
@@ -158,6 +160,7 @@ const Navigation: React.FC<Props> = ({
   displayedAlbums,
   updateTags,
   displayedTags,
+  updateThumbnails,
 }) => {
   const [isUploadModalActive, setIsUploadModalActive] =
     useState<boolean>(false);
@@ -275,6 +278,7 @@ const Navigation: React.FC<Props> = ({
           }))}
           updateTags={updateTags}
           allTags={displayedTags.map((tag) => tag.name)}
+          updateThumbnails={updateThumbnails}
         />
       )}
     </Box>
