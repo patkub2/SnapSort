@@ -20,4 +20,6 @@ public interface PhotoService {
     List<Photo> getPhotosByUserId(Long userId);
 
     List<Photo> getPhotosByUserIdAndAlbumId(Long userId, Long albumId);
+
+    void deletePhoto(Photo photo);
 }

@@ -10,4 +10,6 @@ public interface PhotoTagService {
 
 
     List<PhotoTag> getTagsByPhotoId(Long id);
+
+    void deletePhotoTag(PhotoTag photoTag);
 }

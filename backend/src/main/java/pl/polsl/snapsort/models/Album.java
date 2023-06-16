@@ -37,5 +37,4 @@ public class Album {
     @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "album")
     private List<AlbumPhoto> albumPhotos;
-
 }
