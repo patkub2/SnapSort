@@ -21,6 +21,7 @@ interface Props {
   selectedAlbum: ThumbnailType[];
   displayedTags: displayedTags[];
   selectedAlbumId: number | undefined;
+  isLoading: boolean;
   updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
@@ -29,6 +30,7 @@ const MainView: React.FC<Props> = ({
   displayedTags,
   updateThumbnails,
   selectedAlbumId,
+  isLoading,
 }) => {
   const mappedTagSearchOptions = displayedTags.map((tag) => ({
     value: tag.name,
@@ -77,6 +79,7 @@ const MainView: React.FC<Props> = ({
         images={selectedAlbum?.filter(applyFiltersTags)}
         updateThumbnails={updateThumbnails}
         selectedAlbumId={selectedAlbumId}
+        isLoading={isLoading}
       />
     </MainBox>
   );

@@ -1,8 +1,15 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
-import { Image as AntImage, message, Popconfirm, Popover, Tooltip } from "antd";
+import {
+  Image as AntImage,
+  message,
+  Popconfirm,
+  Popover,
+  Spin,
+  Tooltip,
+} from "antd";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import { ThumbnailType } from "@/interfaces/image";
@@ -11,11 +18,17 @@ import {
   getPhotoById,
   getThumbnailsById,
 } from "@/store/requests";
-import { displayedTags } from "@/interfaces/tag";
 
 const Container = styled.div`
   margin: 1rem 2rem;
   height: 100%;
+`;
+
+const CenterBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 `;
 
 const Box = styled.div`
@@ -39,12 +52,14 @@ const PopupIcon = styled(Image)`
 interface Props {
   images: ThumbnailType[];
   selectedAlbumId: number | undefined;
+  isLoading: boolean;
   updateThumbnails: (thumbnails: ThumbnailType[]) => void;
 }
 
 const Gallery: React.FC<Props> = ({
   images,
   updateThumbnails,
+  isLoading,
   selectedAlbumId,
 }) => {
   const [previewImages, setPreviewImages] = useState<
@@ -54,8 +69,6 @@ const Gallery: React.FC<Props> = ({
     }[]
   >([]);
   const { data: session } = useSession();
-
-  useEffect(() => {}, [previewImages]);
 
   const previewImageHandler = async (id: number) => {
     try {
@@ -146,35 +159,50 @@ const Gallery: React.FC<Props> = ({
   });
 
   return (
-    <Container>
-      <ResponsiveMasonry
-        columnsCountBreakPoints={{ 350: 1, 600: 2, 850: 3, 1230: 4, 1600: 5 }}
-      >
-        <Masonry gutter="1rem">{mappedThumbnails}</Masonry>
-      </ResponsiveMasonry>
-      {previewImages.length > 0 && (
-        <AntImage.PreviewGroup
-          preview={{
-            visible: !!previewImages.length,
-            onVisibleChange: (value) => {
-              if (!value) {
-                setPreviewImages([]);
-              }
-            },
-          }}
-        >
-          {previewImages?.map((image) => {
-            return (
-              <AntImage
-                key={image.id}
-                style={{ display: "none" }}
-                src={`data:image/jpeg;base64,${image.data}`}
-              />
-            );
-          })}
-        </AntImage.PreviewGroup>
+    <Fragment>
+      {!isLoading && (
+        <Container>
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{
+              350: 1,
+              600: 2,
+              850: 3,
+              1230: 4,
+              1600: 5,
+            }}
+          >
+            <Masonry gutter="1rem">{mappedThumbnails}</Masonry>
+          </ResponsiveMasonry>
+          {previewImages.length > 0 && (
+            <AntImage.PreviewGroup
+              preview={{
+                visible: !!previewImages.length,
+                onVisibleChange: (value) => {
+                  if (!value) {
+                    setPreviewImages([]);
+                  }
+                },
+              }}
+            >
+              {previewImages?.map((image) => {
+                return (
+                  <AntImage
+                    key={image.id}
+                    style={{ display: "none" }}
+                    src={`data:image/jpeg;base64,${image.data}`}
+                  />
+                );
+              })}
+            </AntImage.PreviewGroup>
+          )}
+        </Container>
       )}
-    </Container>
+      {isLoading && (
+        <CenterBox>
+          <Spin />
+        </CenterBox>
+      )}
+    </Fragment>
   );
 };
 

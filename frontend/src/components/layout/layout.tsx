@@ -23,6 +23,7 @@ const Layout = () => {
   const [displayedAlbums, setDisplayedAlbums] = useState<displayedAlbums[]>([]);
   const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | undefined>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     const fetchData = async () => {
       const session = await getSession();
@@ -54,8 +55,10 @@ const Layout = () => {
   const getAlbumId = async (id: number) => {
     setSelectedAlbumId(id);
     try {
+      setIsLoading(true);
       getThumbnailsById(id, session?.user.token).then((res) => {
         setSelectedAlbumThumbnails(res.data);
+        setIsLoading(false);
       });
     } catch (error: any) {
       message.error("Something went wrong.");
@@ -77,6 +80,7 @@ const Layout = () => {
         displayedTags={displayedTags}
         updateThumbnails={updateThumbnails}
         selectedAlbumId={selectedAlbumId}
+        isLoading={isLoading}
       />
     </Box>
   );
