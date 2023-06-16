@@ -14,7 +14,7 @@ const MainBox = styled.div`
 const Box1 = styled.div`
   display: flex;
   justify-content: center;
-  padding: 2rem 1.6rem;
+  margin: 2rem 1.6rem;
 `;
 
 interface Props {
@@ -66,7 +66,7 @@ const MainView: React.FC<Props> = ({
 
   return (
     <MainBox>
-      <Box1>
+      <Box1 id="searchBar">
         <Select
           mode="multiple"
           options={mappedTagSearchOptions}

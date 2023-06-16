@@ -23,7 +23,9 @@ import { displayedTags } from "@/interfaces/tag";
 
 const Container = styled.div`
   margin: 1rem 2rem;
-  height: 100%;
+  height: fit-content;
+  min-height: 20rem;
+  padding-bottom: 2rem;
 `;
 
 const CenterBox = styled.div`
@@ -172,7 +174,7 @@ const Gallery: React.FC<Props> = ({
   return (
     <Fragment>
       {!isLoading && (
-        <Container>
+        <Container id="imagesContainer">
           <ResponsiveMasonry
             columnsCountBreakPoints={{
               350: 1,

@@ -95,6 +95,7 @@ export const AlbumText = styled.p`
 `;
 
 const Albums = styled.div`
+  min-height: 10rem;
   overflow-y: auto;
 
   &::-webkit-scrollbar-track {
@@ -191,7 +192,7 @@ const Navigation: React.FC<Props> = ({
           />
           <LogoText>SnapSort</LogoText>
         </Logo>
-        <AddAlbum onClick={addAlbumHandler}>
+        <AddAlbum onClick={addAlbumHandler} id={"addAlbum"}>
           <Icon
             src="icons/cross.svg"
             alt="Cross icon"
@@ -207,7 +208,7 @@ const Navigation: React.FC<Props> = ({
             updateAlbums={updateAlbums}
           />
         )}
-        <Albums>
+        <Albums id="allAlbums">
           {displayedAlbums.length > 0 ? (
             <AlbumList
               albums={displayedAlbums}
@@ -248,7 +249,7 @@ const Navigation: React.FC<Props> = ({
             />
             <AlbumText>Profile</AlbumText>
           </FooterOption>
-          <FooterOption onClick={uploadHandler}>
+          <FooterOption onClick={uploadHandler} id={"uploadImages"}>
             <Icon
               src="icons/upload.svg"
               alt="Upload images icon"
@@ -257,7 +258,7 @@ const Navigation: React.FC<Props> = ({
             />
             <AlbumText>Upload</AlbumText>
           </FooterOption>
-          <FooterOption onClick={logoutHandler}>
+          <FooterOption onClick={logoutHandler} id={"logout"}>
             <Icon
               src="icons/logout.svg"
               alt="Dark mode icon"
