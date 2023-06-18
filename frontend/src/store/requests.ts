@@ -74,3 +74,23 @@ export const changePhotoTagsById = (
     },
   });
 };
+
+export const getIsNewUser = (token: string | undefined) => {
+  return axios.get(`http://localhost:8080/api/users/isNewUser`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const setIsNewUser = (isNew: boolean, token: string | undefined) => {
+  return axios.post(
+    `http://localhost:8080/api/users/changeNewUserStatus?isNewUser=${isNew}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
