@@ -39,4 +39,7 @@ public class User {
     @JsonIgnore // Add this annotation
     @OneToMany(mappedBy = "user")
     private List<Album> albums;
+
+    @Column(name = "is_new_user", columnDefinition = "boolean default true") // Set default value to true
+    private boolean isNewUser = true;
 }
