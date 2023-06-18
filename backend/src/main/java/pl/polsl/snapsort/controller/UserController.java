@@ -92,11 +92,19 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
+
+        // Preserve the existing hashed password
+        String existingPassword = user.getPassword();
+
         user.setNewUser(isNewUser);
+
+        // Restore the existing hashed password
+        user.setPassword(existingPassword);
+
         User updatedUser = userService.saveUser(user);
 
         if (updatedUser != null) {
-            return ResponseEntity.ok("New user status changed successfully to: "+isNewUser);
+            return ResponseEntity.ok("New user status changed successfully to: " + isNewUser);
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to change new user status.");
