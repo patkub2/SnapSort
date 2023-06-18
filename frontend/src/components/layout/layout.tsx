@@ -5,7 +5,12 @@ import styled from "styled-components";
 import Navigation from "../nav/navigation";
 import MainView from "../main-view/main-view";
 
-import { getAllAlbums, getAllTags, getThumbnailsById } from "@/store/requests";
+import {
+  getAllAlbums,
+  getAllTags,
+  getIsNewUser,
+  getThumbnailsById,
+} from "@/store/requests";
 import { displayedAlbums } from "@/interfaces/album";
 import { displayedTags } from "@/interfaces/tag";
 import { message } from "antd";
@@ -25,6 +30,7 @@ const Layout = () => {
   const [displayedTags, setDisplayedTags] = useState<displayedTags[]>([]);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
   useEffect(() => {
     const fetchData = async () => {
       const session = await getSession();
@@ -36,6 +42,9 @@ const Layout = () => {
           getAllTags(session.user.token).then((res) =>
             setDisplayedTags(res.data)
           );
+          getIsNewUser(session.user.token).then((res) => {
+            setIsNewUser(res.data);
+          });
         } catch (error: any) {
           message.error(error.response.data.message ?? "Something went wrong");
         }
@@ -71,7 +80,7 @@ const Layout = () => {
 
   return (
     <Box>
-      <Onboarding />
+      {isNewUser && <Onboarding />}
       <Navigation
         getAlbumId={getAlbumId}
         updateAlbums={updateAlbums}

@@ -1,3 +1,5 @@
+import { setIsNewUser } from "@/store/requests";
+import { useSession } from "next-auth/react";
 import { Fragment, useState, useEffect } from "react";
 import Joyride, { STATUS, Step } from "react-joyride";
 import styled from "styled-components";
@@ -95,6 +97,8 @@ const Onboarding = () => {
     ] as Step[],
   });
 
+  const { data: session } = useSession();
+
   useEffect(() => {
     // setDomLoaded(true);
   }, []);
@@ -102,23 +106,25 @@ const Onboarding = () => {
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
     if (status === STATUS.FINISHED) {
-      console.log(status);
+      try {
+        setIsNewUser(false, session?.user.token);
+      } catch (error: any) {
+        console.log(error.response.data.message);
+      }
     }
   };
   return (
     <Fragment>
-      {domLoaded && (
-        <div>
-          <Joyride
-            continuous
-            callback={handleJoyrideCallback}
-            run={run}
-            steps={steps}
-            scrollToFirstStep
-            showSkipButton
-          />
-        </div>
-      )}
+      <div>
+        <Joyride
+          continuous
+          callback={handleJoyrideCallback}
+          run={run}
+          steps={steps}
+          scrollToFirstStep
+          showSkipButton
+        />
+      </div>
     </Fragment>
   );
 };
