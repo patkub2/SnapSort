@@ -1,6 +1,6 @@
 import { setIsNewUser } from "@/store/requests";
 import { useSession } from "next-auth/react";
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 import Joyride, { STATUS, Step } from "react-joyride";
 import styled from "styled-components";
 
@@ -13,7 +13,6 @@ const H2 = styled.h2`
 `;
 
 const Onboarding = () => {
-  const [domLoaded, setDomLoaded] = useState<boolean>(false);
   const [{ run, steps }, setState] = useState({
     run: true,
     steps: [
@@ -99,10 +98,6 @@ const Onboarding = () => {
 
   const { data: session } = useSession();
 
-  useEffect(() => {
-    // setDomLoaded(true);
-  }, []);
-
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
     if (status === STATUS.FINISHED) {
@@ -122,7 +117,6 @@ const Onboarding = () => {
           run={run}
           steps={steps}
           scrollToFirstStep
-          showSkipButton
         />
       </div>
     </Fragment>
