@@ -48,7 +48,7 @@ public class UserController {
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
         existingUser.setUsername(user.getUsername());
-        return userService.saveUser(existingUser);
+        return userService.saveUserHash(existingUser);
     }
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
@@ -56,7 +56,7 @@ public class UserController {
     }
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.saveUser(user);
+        User createdUser = userService.saveUserHash(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
@@ -66,7 +66,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
 
-        User createdUser = userService.saveUser(user);
+        User createdUser = userService.saveUserHash(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
@@ -93,14 +93,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        // Preserve the existing hashed password
-        String existingPassword = user.getPassword();
-
         user.setNewUser(isNewUser);
-
-        // Restore the existing hashed password
-        user.setPassword(existingPassword);
-
         User updatedUser = userService.saveUser(user);
 
         if (updatedUser != null) {

@@ -18,6 +18,9 @@ public interface UserService {
     User getUserById(Long id);
     User saveUser(User user);
 
+    User saveUserHash(User user);
+
+
     User getUserByUsername(String username);
 
     void deleteUser(Long id);
