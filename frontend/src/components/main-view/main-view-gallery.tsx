@@ -36,6 +36,7 @@ const CenterBox = styled.div`
 `;
 
 const Box = styled.div`
+  width: fit-content;
   overflow: hidden;
   border-radius: 6px;
   box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
