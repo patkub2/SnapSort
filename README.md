@@ -110,7 +110,7 @@ _Make sure to replace <your MySQL password>, <port the database runs at>, and <y
 
 ## License
 
-SnapSort is licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
+SnapSort is licensed under the [MIT License](LICENSE)
 
 ## API Reference
 
